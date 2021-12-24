@@ -15,6 +15,13 @@ df['corr_ratio']=0
 
 print(df.columns)
 
+# ページ数を数値に変換しておく
+def str2f(page_str):
+    int_page = int(page_str.replace("P","").replace("p",""))
+    return int_page
+
+df['page'] = df['page'].map(str2f)
+
 # 選択したカラムだけ抽出することに
 selected_df = df[['question', 'answer', 'page', 'made_date', 'ntrial', 'ncorr', 'corr_ratio']]
 

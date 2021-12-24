@@ -1,19 +1,19 @@
-import './App.css';
-import axios from 'axios';
-import { DisplayConds } from './DisplayConds';
-import { useEffect, useState } from 'react';
+import "./App.css";
+import axios from "axios";
+import { DisplayConds } from "./DisplayQuiz";
+import { useEffect, useState } from "react";
 
 function App() {
-
   const [conds, setConds] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:1234/measurements", {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      }
-    })
-      .then(res => {
+    axios
+      .get("http://localhost:1234/measurements", {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      })
+      .then((res) => {
         console.log("RESPONSE");
         console.log(res);
         console.log(res.data);
@@ -34,22 +34,20 @@ function App() {
           console.log(error.request);
         } else {
           // Something happened in setting up the request that triggered an Error
-          console.log('Error', error.message);
+          console.log("Error", error.message);
         }
         console.log(error.config);
       });
-  },[]);
+  }, []);
 
   console.log(conds);
 
   return (
     <div className="App">
       <h1> Kunio Hirata </h1>
-      <DisplayConds conds={conds}/>
+      <DisplayConds conds={conds} />
     </div>
   );
 }
 
 export default App;
-
-

@@ -1,25 +1,24 @@
-import "./App.css";
 import axios from "axios";
-import { DisplayConds } from "./DisplayConds";
+import { DisplayQuiz } from "./DisplayQuiz";
 import { useEffect, useState } from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 
-import { Conds, LogStr } from "./components/types/api/conds";
+import { QuizInfo } from "./components/types/api/quizinfo";
 
 function App() {
-  const [conds, setConds] = useState<Array<Conds>>([]);
+  const [quizes, setQuizes] = useState<Array<QuizInfo>>([]);
 
-  // axiosを利用して測定条件をすべて読み込んでいる
+  // axiosを利用してクイズをすべて読み込んでいる
   useEffect(() => {
     axios
-      .get<Array<Conds>>("http://localhost:1234/measurements", {
+      .get<Array<QuizInfo>>("http://localhost:9201/quiz", {
         headers: {
           "Access-Control-Allow-Origin": "*",
         },
       })
       .then((res) => {
-        console.log("Here done");
-        setConds(res.data);
+        console.log(res.data);
+        setQuizes(res.data);
       })
       .catch(function (error) {
         console.log("ERROR?");
@@ -50,8 +49,8 @@ function App() {
   return (
     <ChakraProvider>
       <div className="App">
-        <h1> ENSOKU GUI ver 1.0 </h1>
-        <DisplayConds conds={conds} />
+        <h1> Ibuki Quiz app ver 1.0 2021/12/24 </h1>
+        <DisplayQuiz quizes={quizes} />
       </div>
     </ChakraProvider>
   );

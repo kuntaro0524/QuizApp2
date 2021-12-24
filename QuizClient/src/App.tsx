@@ -2,13 +2,20 @@ import axios from "axios";
 import { DisplayQuiz } from "./DisplayQuiz";
 import { useEffect, useState } from "react";
 import { ChakraProvider } from "@chakra-ui/react";
+import { RecoilRoot, useRecoilValue } from "recoil";
 
 import { QuizInfo } from "./components/types/api/quizinfo";
+import { QuizLayout } from "./components/pages/QuizLayout";
+import { useRecoilState } from "recoil";
+import { quizState, readState } from "./components/hooks/quizState";
 
 function App() {
-  const [quizes, setQuizes] = useState<Array<QuizInfo>>([]);
-
   // axiosを利用してクイズをすべて読み込んでいる
+  // recoilを利用して quizState.js で設定したグローバル変数と関数へアクセス
+  const [quizInfo, setQuizInfo] = useRecoilState(quizState);
+  // JSONで一気にやってみたかったけど分けてステート管理するのを実装してみる
+  const [readInfo, setReadInfo] = useRecoilState(readState);
+
   useEffect(() => {
     axios
       .get<Array<QuizInfo>>("http://localhost:9201/quiz", {
@@ -18,7 +25,7 @@ function App() {
       })
       .then((res) => {
         console.log(res.data);
-        setQuizes(res.data);
+        setQuizInfo(res.data);
       })
       .catch(function (error) {
         console.log("ERROR?");
@@ -48,10 +55,9 @@ function App() {
 
   return (
     <ChakraProvider>
-      <div className="App">
-        <h1> Ibuki Quiz app ver 1.0 2021/12/24 </h1>
-        <DisplayQuiz quizes={quizes} />
-      </div>
+      <App />
+      <h1> Ibuki Quiz app ver 1.0 2021/12/24 </h1>
+      <QuizLayout />
     </ChakraProvider>
   );
 }

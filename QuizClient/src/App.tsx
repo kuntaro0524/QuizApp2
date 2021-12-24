@@ -55,7 +55,6 @@ function App() {
 
   return (
     <ChakraProvider>
-      <App />
       <h1> Ibuki Quiz app ver 1.0 2021/12/24 </h1>
       <QuizLayout />
     </ChakraProvider>

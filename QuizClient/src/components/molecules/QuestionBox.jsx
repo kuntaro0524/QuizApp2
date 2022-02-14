@@ -31,31 +31,33 @@ export const QuestionBox = (props) => {
   const onChangeInput = useCallback((e) => {
     let userAnswer = e.target.value;
     setAnswerInfo({ ...answerInfo, inputAnswer: userAnswer });
+    // console.log(answerInfo);
   });
   // このときの問題文
   let current_question = quizInfo[answerInfo.currentIndex];
-  console.log("今の問題番号：" + answerInfo.currentIndex);
+  console.log(current_question.question);
 
   const onClickCheckAnswer = () => {
     // この問題の答え
-    let correctAnswer = current_question.Answer;
+    let correctAnswer = current_question.answer;
     console.log("CORRECT_ANSWER=" + correctAnswer);
     console.log("User_ANSWER=" + answerInfo.inputAnswer);
 
-    // let nextIndex = answerInfo.currentIndex + 1;
     setAnswerInfo({
+      ...answerInfo,
       isAnswered: true,
-      currentIndex: answerInfo.currentIndex,
       isCorrect: correctAnswer === answerInfo.inputAnswer,
     });
+    console.log(answerInfo.isCorrect);
   };
 
   // 次のクイズボタンを押したらインデックスが変わる
   const onClickNextQuestion = useCallback((e) => {
     // 各設問に対する成績を埋めていくわけです
     // この問題の成績を更新する
-    const new_ntry = current_question.ntry + 1;
+    const new_ntry = current_question.ntrial + 1;
     let new_ncorr = current_question.ncorr;
+    console.log("new_ncorr:" + new_ncorr);
     if (answerInfo.isCorrect) {
       new_ncorr = new_ncorr + 1;
       // 全体の正解数も記録更新
@@ -97,14 +99,18 @@ export const QuestionBox = (props) => {
   return (
     <div>
       <h1>
-        {" "}
-        この問題の過去の正答率{" "}
-        {((current_question.ncorr / current_question.ntry) * 100.0).toFixed(1)}%
+        この問題の過去の正答率
+        {current_question.ntry != 0
+          ? ((current_question.ncorr / current_question.ntry) * 100.0).toFixed(
+              1
+            )
+          : 0.0}
+        :
       </h1>
       <Flex bg="darkgreen.100" size="400px" w="800px">
         <Box>
           <Stack spacing={3}>
-            <Text fontSize="3xl"> {current_question.Question} </Text>
+            <Text fontSize="3xl"> {current_question.question} </Text>
             <Input
               value={answerInfo.inputAnswer}
               fontSize="3xl"

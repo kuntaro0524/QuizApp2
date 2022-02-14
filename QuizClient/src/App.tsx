@@ -8,6 +8,8 @@ import { QuizInfo } from "./components/types/api/quizinfo";
 import { QuizLayout } from "./components/pages/QuizLayout";
 import { useRecoilState } from "recoil";
 import { quizState, readState } from "./components/hooks/quizState";
+import { NcorrProvider } from "./components/providers/NumCorrProvider";
+import { NtrialProvider } from "./components/providers/NumTrialProvider";
 
 function App() {
   // axiosを利用してクイズをすべて読み込んでいる
@@ -26,6 +28,7 @@ function App() {
       .then((res) => {
         console.log(res.data);
         setQuizInfo(res.data);
+        setReadInfo({ isRead: true });
       })
       .catch(function (error) {
         console.log("ERROR?");
@@ -55,8 +58,12 @@ function App() {
 
   return (
     <ChakraProvider>
-      <h1> Ibuki Quiz app ver 1.0 2021/12/24 </h1>
-      <QuizLayout />
+      <NcorrProvider>
+        <NtrialProvider>
+          <h1> Ibuki Quiz app ver 1.0 2021/12/24 </h1>
+          <QuizLayout />
+        </NtrialProvider>
+      </NcorrProvider>
     </ChakraProvider>
   );
 }

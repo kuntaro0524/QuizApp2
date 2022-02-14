@@ -13,6 +13,8 @@ export const QuizLayout = () => {
   // JSONで一気にやってみたかったけど分けてステート管理するのを実装してみる
   const readInfo = useRecoilValue(readState);
 
+  console.log(readInfo.isRead);
+
   // パラメタの初期化
   // const { all_result, setResult } = useResult();
 

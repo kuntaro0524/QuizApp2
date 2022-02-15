@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Box, Flex, Input, Stack, Text } from "@chakra-ui/react";
 import { MyButton } from "../atoms/MyButton";
-import { useRecoilState, useRecoilValue } from "recoil";
+// import { useRecoilState, useRecoilValue } from "recoil";
 // import { answerState, quizState, readState } from "../hooks/quizState";
 
 import { AnswerBox } from "../atoms/AnswerBox";
@@ -10,49 +10,35 @@ import { useNtry } from "../hooks/useNtrial";
 import { useNcorr } from "../hooks/useNcorr";
 import { useQuiz } from "../hooks/useQuiz";
 
-export const QuestionBox = (props) => {
+export const QuestionBox = () => {
   const { quizArray, setQuizArray } = useQuiz();
 
-  // Providerで定義したサイクル数のフックス
-  const { ncycle, setCycle } = useCycleNum();
+  // Providerで定義したサイクル数のフッcurrQ
+  const [ncycle, setCycle] = useState(0);
+  const [nAns, setNans] = useState(0);
+  const [nCorr, setNcorr] = useState(0);
 
-  // Providerで定義したこれまでのトライ回数
-  const { ntrial_total, setNtrialTotal } = useNtry();
-
-  // Providerで定義したこれまでのトライ回数
-  const { ncorr_total, setNcorrTotal } = useNcorr();
-
-  console.log("NCORR_TOTAL=" + ncorr_total);
-
-  const onChangeInput = useCallback((e) => {
+  const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     let userAnswer = e.target.value;
     // setAnswerInfo({ ...answerInfo, inputAnswer: userAnswer });
-  });
+  };
   // このときの問題文
   const currentIndex = 0;
-  let current_question = quizArray[currentIndex];
-  console.log(current_question.question);
+  let currQ = quizArray[currentIndex];
+  console.log(currQ);
 
   const onClickCheckAnswer = () => {
     // この問題の答え
-    let correctAnswer = current_question.answer;
+    let correctAnswer = currQ.answer;
     console.log("CORRECT_ANSWER=" + correctAnswer);
-    // console.log("User_ANSWER=" + answerInfo.inputAnswer);
-
-    // setAnswerInfo({
-    //   ...answerInfo,
-    //   isAnswered: true,
-    //   isCorrect: correctAnswer === answerInfo.inputAnswer,
-    // });
-    // console.log(answerInfo.isCorrect);
   };
 
   // 次のクイズボタンを押したらインデックスが変わる
-  const onClickNextQuestion = useCallback((e) => {
+  const onClickNextQuestion = () => {
     // 各設問に対する成績を埋めていくわけです
     // この問題の成績を更新する
-    const new_ntry = current_question.ntrial + 1;
-    let new_ncorr = current_question.ncorr;
+    const new_ntry = currQ.ntrial + 1;
+    let new_ncorr = currQ.ncorr;
     console.log("new_ncorr:" + new_ncorr);
     // console.log("isCorrect:" + answerInfo.isCorrect);
     // if (answerInfo.isCorrect) {
@@ -61,7 +47,7 @@ export const QuestionBox = (props) => {
     //   setNcorrTotal(ncorr_total + 1);
     // }
     let copy_to_change = {
-      ...current_question,
+      ...currQ,
       ntrial: new_ntry,
       ncorr: new_ncorr,
     };
@@ -98,19 +84,17 @@ export const QuestionBox = (props) => {
     //   isCorrect: false,
     // });
     // 今回何問問題をやっているか
-    setNtrialTotal(ntrial_total + 1);
-    console.log(`今までにやった問題数 ${ntrial_total}`);
-    console.log(`今までの正答数 ${ncorr_total}`);
-  });
+    setNans(nAns + 1);
+    console.log(`今までにやった問題数 ${nAns}`);
+    // console.log(`今までの正答数 ${ncorr_total}`);
+  };
 
   return (
     <div>
       <h1>
         この問題の過去の正答率
-        {current_question.ntry != 0
-          ? ((current_question.ncorr / current_question.ntry) * 100.0).toFixed(
-              1
-            )
+        {currQ.ntrial != 0
+          ? ((currQ.ncorr / currQ.ntrial) * 100.0).toFixed(1)
           : 0.0}
         :
       </h1>
@@ -118,7 +102,7 @@ export const QuestionBox = (props) => {
         <Box>
           <Stack spacing={3}>
             <Text fontSize="3xl"> This is it </Text>
-            <Text fontSize="3xl"> {current_question.question} </Text>
+            <Text fontSize="3xl"> {currQ.question} </Text>
             {/* <Input
               // value={answerInfo.inputAnswer}
               fontSize="3xl"
@@ -126,7 +110,7 @@ export const QuestionBox = (props) => {
               onChange={onChangeInput}
             /> */}
             {/* <AnswerBox
-              answer={current_question.answer}
+              answer={currQ.answer}
               // isAnswered={answerInfo.isAnswered}
               // isCorrect={answerInfo.isCorrect}
             />

@@ -118,8 +118,9 @@ export const QuestionBox = (props) => {
               onChange={onChangeInput}
             />
             <AnswerBox
-              answer={current_question.Answer}
+              answer={current_question.answer}
               isAnswered={answerInfo.isAnswered}
+              isCorrect={answerInfo.isCorrect}
             />
             <Flex>
               <Box>

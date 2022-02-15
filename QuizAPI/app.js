@@ -81,9 +81,9 @@ app.delete("/quiz", function (req, res) {
 // けど、クイズアプリの方で１問ずつ出すとかやるので、それをどう実装するのかにもよるかなぁ。
 
 app
-  .route("/quiz/:measID")
+  .route("/quiz/:quizID")
   .get(function (req, res) {
-    const mid = req.params.measID;
+    const mid = req.params.quizID;
     QuizInfo.findOne({ _id: mid }, function (err, foundCond) {
       if (foundCond) {
         res.send(foundCond);
@@ -93,7 +93,7 @@ app
     });
   })
   .put(function (req, res) {
-    const mid = req.params.measID;
+    const mid = req.params.quizID;
     console.log("PPPP=" + mid);
     /* JSON data */
     const newCond = req.body;
@@ -117,7 +117,7 @@ app
 　　更新できるようになった。 */
 
   .patch(function (req, res) {
-    const mid = req.params.measID;
+    const mid = req.params.quizID;
     console.log("PPPP=" + mid);
     /* JSON data */
     /* 受け取るのはJSONそのもの */
@@ -143,7 +143,7 @@ app
 
   /* IDを指定してそのエントリを削除するという方法　使うことはなさげ */
   .delete(function (req, res) {
-    const mid = req.params.measID;
+    const mid = req.params.quizID;
     QuizInfo.findOneAndDelete(
       /* conditions */
       { _id: mid },

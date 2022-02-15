@@ -58,23 +58,36 @@ export const QuestionBox = (props) => {
     const new_ntry = current_question.ntrial + 1;
     let new_ncorr = current_question.ncorr;
     console.log("new_ncorr:" + new_ncorr);
+    console.log("isCorrect:" + answerInfo.isCorrect);
     if (answerInfo.isCorrect) {
       new_ncorr = new_ncorr + 1;
       // 全体の正解数も記録更新
       setNcorrTotal(ncorr_total + 1);
     }
-    const new_obj = {
-      Question: current_question.Question,
-      Answer: current_question.Answer,
-      ntry: new_ntry,
+    let copy_to_change = {
+      ...current_question,
+      ntrial: new_ntry,
       ncorr: new_ncorr,
     };
+
     let copy_quizes = [...quizInfo];
 
-    copy_quizes.splice(answerInfo.currentIndex, 1, new_obj);
+    copy_quizes.splice(answerInfo.currentIndex, 1, copy_to_change);
+    console.log(copy_quizes);
     setQuizInfo(copy_quizes);
 
-    console.log("Updated num:" + new_ntry + ", " + new_ncorr);
+    console.log(">>>>>>>>>>>>>>>>>>>>>>");
+    console.log(quizInfo);
+    console.log(">>>>>>>>>>>>>>>>>>>>>>");
+    console.log("######################");
+    console.log(copy_quizes);
+    console.log("######################");
+
+    console.log(
+      "Updated object:" + copy_quizes[answerInfo.currentIndex].question
+    );
+    console.log("Updated ncorr:" + copy_quizes[answerInfo.currentIndex].ncorr);
+    console.log("Updated ntry:" + copy_quizes[answerInfo.currentIndex].ntrial);
 
     // クイズのインデックスをインクリメント
     let nextIndex = answerInfo.currentIndex + 1;

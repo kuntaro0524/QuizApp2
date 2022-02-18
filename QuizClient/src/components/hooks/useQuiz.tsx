@@ -12,10 +12,11 @@ export const useQuiz = () => {
   // (NtrialContextType) => useContext(AllQuizContext);
   const [isRead, setIsRead] = useState<boolean>(false);
 
-  const getQuizes = () => {
+  const useDBs = () => {
     useEffect(() => {
       axios
-        .get<Array<QuizInfo>>("http://localhost:9201/quiz", {
+        // .get<Array<QuizInfo>>("http://localhost:9201/quiz", {
+        .get<Array<QuizInfo>>("http://192.168.99.123:9201/quiz", {
           headers: {
             "Access-Control-Allow-Origin": "*",
           },
@@ -53,5 +54,6 @@ export const useQuiz = () => {
     }, []);
   };
 
-  return { quizArray, setQuizArray, getQuizes };
+
+  return { quizArray, setQuizArray, useDBs};
 };

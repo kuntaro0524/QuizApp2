@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { QuizInfo } from "../types/quiz";
 
@@ -8,8 +8,6 @@ export const useQuiz = () => {
   const [quizArr, setQarr] = useState<Array<QuizInfo>>([]);
 
   const getQuizes = useCallback(() => {
-    console.log("TESTTEST");
-
     axios
       .get<Array<QuizInfo>>("http://localhost:9201/quiz", {
         headers: {

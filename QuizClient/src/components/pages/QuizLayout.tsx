@@ -8,9 +8,10 @@ import { useQuiz } from "../hooks/useQuiz";
 export const QuizLayout = () => {
   // axiosを利用してクイズをすべて読み込んでいる
   // recoilを利用して quizState.js で設定したグローバル変数と関数へアクセス
-  const { quizArray, setQuizArray, getQuizes } = useQuiz();
+  const { quizArray, setQuizArray, useDBs } = useQuiz();
+  
+  useDBs();
 
-  getQuizes();
   return (
     <>
       <h1> Hello world </h1>

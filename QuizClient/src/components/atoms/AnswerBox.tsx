@@ -8,6 +8,8 @@ type Props = {
 };
 
 export const AnswerBox = (props: Props) => {
+  console.log("AnswerBox is called.");
+  
   const { answer, isAnswered, isCorrect } = props;
 
   let d_color = "";

@@ -22,7 +22,9 @@ export const QuestionBox = () => {
   // 各回答についてはQuestionBoxで寿命があるので良いかと
   const [userAnswer, setUserAnswer] = useState("");
   const [qindex, setQindex] = useState(0);
-  let isCorrect=false;
+
+  const [isCorrect, setIsCorrect] = useState<boolean>(false);
+  const [isAnswered, setIsAnswered] = useState<boolean>(false);
 
   const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     setUserAnswer(e.target.value);
@@ -34,23 +36,23 @@ export const QuestionBox = () => {
   const onClickCheckAnswer = () => {
     // この問題の答え
     let correctAnswer = currQ.answer;
-    console.log(userAnswer);
-    console.log(correctAnswer);
+
     if (userAnswer === correctAnswer) {
-      isCorrect=true;
+      console.log("Correct answer!");
+      setIsCorrect(true);
     } else {
-      isCorrect=false;
+      setIsCorrect(false);
     }
-    console.log(isCorrect);
+    setIsAnswered(true);
   };
 
   const onClickEnd = () => {
     console.log(typeof(quizArray));
     quizArray.map(eachquiz => {
-      // console.log(eachquiz._id);
-      // console.log(eachquiz.question);
+      console.log(eachquiz._id);
+      console.log(eachquiz.ntrial);
       const quiz_id = eachquiz._id;
-      let quiz_url = `http://localhost:9201/quiz/${quiz_id}`;
+      let quiz_url = `http://192.168.99.123:9201/quiz/${quiz_id}`;
       axios
         .patch<Array<QuizInfo>>(quiz_url, eachquiz, 
         {
@@ -85,6 +87,7 @@ export const QuestionBox = () => {
   // 次のクイズボタンを押したらインデックスが変わる
   const onClickNextQuestion = () => {
     console.log("Button was pushed");
+    console.log("Correct Flag="+isCorrect);
     
     // 各設問に対する成績を埋めていくわけです
     // この問題の成績を更新する
@@ -107,6 +110,10 @@ export const QuestionBox = () => {
       corr_ratio: tmp_corr_ratio,
     };
 
+    console.log("############################3");
+    console.log(copy_to_change);
+    console.log("############################3");
+    
     let copy_quizes = [...quizArray];
 
     copy_quizes.splice(qindex, 1, copy_to_change);
@@ -126,6 +133,9 @@ export const QuestionBox = () => {
     console.log(`今までにやった問題数 ${nAns}`);
     console.log(quizArray);
 
+    setIsAnswered(false);
+    setIsCorrect(false);
+    setUserAnswer("");
   };
 
   return (
@@ -147,6 +157,11 @@ export const QuestionBox = () => {
               fontSize="3xl"
               placeholder="ここに答えを書く"
               onChange={onChangeInput}
+            />
+            <AnswerBox
+              answer={currQ.answer}
+              isAnswered={isAnswered}
+              isCorrect={isCorrect}
             />
             <Flex>
               <Box>

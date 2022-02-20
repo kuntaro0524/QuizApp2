@@ -7,7 +7,7 @@ from pymongo import MongoClient
 client = MongoClient('localhost', 27017)
 
 # CSVファイルを読み込んでJSONにする
-df = pd.read_csv(sys.argv[1])
+df = pd.read_csv(sys.argv[1],encoding='shiftjis')
 print("PANDAS data frame")
 
 # 新しい列を追加する　
@@ -36,6 +36,7 @@ parsed = json.loads(json_strings)
 
 db = client.ibukiquiz
 col = db.shakai
+#col = db.english
 
 # shakaiのクイズDBへの登録
 result = col.insert_many(parsed)

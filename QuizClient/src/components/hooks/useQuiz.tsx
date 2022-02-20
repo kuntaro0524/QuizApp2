@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState, VFC } from "react";
 import { AllQuizContext } from "../providers/QuizProvider";
 import { QuizInfo } from "../types/api/quizinfo";
 
@@ -7,12 +7,19 @@ import { QuizInfo } from "../types/api/quizinfo";
 
 // import { NtrialContext, NtrialContextType } from "../providers/QuizProvider";
 
+type Props = {
+  start_page: number;
+  end_page: number;
+}
+
 export const useQuiz = () => {
   const { quizArray, setQuizArray } = useContext(AllQuizContext);
   // (NtrialContextType) => useContext(AllQuizContext);
   const [isRead, setIsRead] = useState<boolean>(false);
 
-  const useDBs = () => {
+  const useDBs = ((props:Props) => {
+    const {start_page, end_page} = props;
+
     useEffect(() => {
       axios
         // .get<Array<QuizInfo>>("http://localhost:9201/quiz", {
@@ -23,14 +30,8 @@ export const useQuiz = () => {
         })
         .then((res) => {
           console.log(quizArray);
-
-          console.log(typeof res.data);
-          console.log(typeof quizArray);
-          // const newQuizArray = {...quizArray, res.data};
-          // console.log(typeof res.data);
-          console.log(res.data);
-
-          setQuizArray(res.data);
+          const filtered_quiz = res.data.filter(quiz => quiz.page >= start_page && quiz.page <=end_page);
+          setQuizArray(filtered_quiz);
           console.log(quizArray);
         })
         .catch(function (error) {
@@ -52,7 +53,7 @@ export const useQuiz = () => {
           console.log(error.config);
         });
     }, []);
-  };
+  });
 
   return { quizArray, setQuizArray, useDBs};
 };

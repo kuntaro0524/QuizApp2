@@ -13,7 +13,7 @@ import axios from "axios";
 import { QuizInfo } from "../types/api/quizinfo";
 
 export const QuestionBox = () => {
-  const { quizArray, setQuizArray } = useQuiz();
+  const { quizArray, setQuizArray} = useQuiz();
 
   const [ncycle, setCycle] = useState(0);
   const [nAns, setNans] = useState(0);

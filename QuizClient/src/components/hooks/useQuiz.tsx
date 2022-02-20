@@ -54,6 +54,5 @@ export const useQuiz = () => {
     }, []);
   };
 
-
   return { quizArray, setQuizArray, useDBs};
 };

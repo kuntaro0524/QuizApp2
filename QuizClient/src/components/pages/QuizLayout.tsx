@@ -47,8 +47,8 @@ export const QuizLayout = () => {
           <h1>１サイクル終わったら正答率によってフィルタをかけない</h1>
         )}
       </Checkbox>
-      {/* <ScoreTable /> */}
-      <QuestionBox isFilter={isFilter} filter_ratio={0.75} />
+      <ScoreTable />
+      <QuestionBox isFilter={isFilter} filter_ratio={30} />
     </>
   );
 };

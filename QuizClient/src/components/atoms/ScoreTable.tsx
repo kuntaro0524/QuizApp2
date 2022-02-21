@@ -17,17 +17,23 @@ import {
   TableCaption,
 } from "@chakra-ui/react";
 import { useRecoilTransactionObserver_UNSTABLE } from "recoil";
+import { useTable } from "../hooks/useTable";
 
 export const ScoreTable: VFC = memo(() => {
-  // サイクル数はContextのフックスを利用する
-  // Providerで定義したサイクル数のフックス
-  const { ncycle, setCycle } = useCycleNum();
-  // const { all_result, setResult } = useResult();
-  // const { ncorr_total, setNcorrTotal } = useNcorr();
-  // const { ntrial_total, setNtrialTotal } = useNtry();
+  const {
+    ncycle,
+    ntrial_total,
+    ncorr_total,
+    setCycle,
+    setNtrialTotal,
+    setNcorrTotal,
+  } = useTable();
 
-  // let correct_ratio = ((ncorr_total / ntrial_total) * 100.0).toFixed(2.0);
+  let correct_ratio = "0.0";
 
+  if (ntrial_total != 0) {
+    correct_ratio = ((ncorr_total / ntrial_total) * 100.0).toFixed(2.0);
+  }
   return (
     <Table size="md" variant="simple" colorScheme="black">
       <TableCaption>現状のまとめ</TableCaption>
@@ -44,16 +50,13 @@ export const ScoreTable: VFC = memo(() => {
       <Tbody>
         <Tr>
           <Td fontSize="20px" textAlign="center">
-            {/* {ntrial_total} */}
-            50
+            {ntrial_total}
           </Td>
           <Td fontSize="20px" textAlign="center">
-            {/* {ncorr_total} */}
-            40
+            {ncorr_total}
           </Td>
           <Td fontSize="20px" textAlign="center" isNumeric>
-            {/* {correct_ratio} */}
-            30
+            {correct_ratio}
           </Td>
           <Td fontSize="20px" textAlign="center" isNumeric>
             {ncycle}

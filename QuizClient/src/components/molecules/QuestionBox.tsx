@@ -11,6 +11,7 @@ import { useNcorr } from "../hooks/useNcorr";
 import { useQuiz } from "../hooks/useQuiz";
 import axios from "axios";
 import { QuizInfo } from "../types/api/quizinfo";
+import { useTable } from "../hooks/useTable";
 
 type Props = {
   isFilter: boolean;
@@ -21,10 +22,19 @@ export const QuestionBox = (props: Props) => {
   const { quizArray, setQuizArray } = useQuiz();
   const { isFilter, filter_ratio } = props;
 
-  const { ncycle, setCycle } = useCycleNum();
+  // const { ncycle, setCycle } = useCycleNum();
   // const [ncycle, setCycle] = useState(0);
-  const [nAns, setNans] = useState(0);
-  const [nCorrTotal, setNcorrTotal] = useState(0);
+  // const [nAns, setNans] = useState(0);
+  // const [nCorrTotal, setNcorrTotal] = useState(0);
+
+  const {
+    ncycle,
+    ntrial_total,
+    ncorr_total,
+    setCycle,
+    setNtrialTotal,
+    setNcorrTotal,
+  } = useTable();
 
   // 各回答についてはQuestionBoxで寿命があるので良いかと
   const [userAnswer, setUserAnswer] = useState("");
@@ -93,9 +103,10 @@ export const QuestionBox = (props: Props) => {
 
   const filterQuizes = (corr_threshold: number) => {
     console.log(`Filtered!! ${corr_threshold}`);
-    const filtered_quiz = quizArray.filter(
-      (quiz) => quiz.corr_ratio < corr_threshold
-    );
+    const filtered_quiz = quizArray.filter(function (quiz) {
+      console.log(quiz.corr_ratio);
+      return quiz.corr_ratio < corr_threshold;
+    });
     console.log("<<<< before >>>>>");
     console.log(quizArray);
     console.log("<<<< after >>>>>");
@@ -118,7 +129,7 @@ export const QuestionBox = (props: Props) => {
       console.log(new_ncorr);
 
       // 全体の正解数も記録更新
-      setNcorrTotal(nCorrTotal + 1);
+      setNcorrTotal(ncorr_total + 1);
     }
     // この問題の正答率を計算しておく
     let tmp_corr_ratio = (new_ncorr / new_ntry) * 100.0;
@@ -152,9 +163,9 @@ export const QuestionBox = (props: Props) => {
       // 今回何問問題をやっているか
       setQindex(qindex + 1);
     }
-    setNans(nAns + 1);
+    setNtrialTotal(ntrial_total + 1);
     console.log(`サイクル数 ${ncycle}`);
-    console.log(`今までにやった問題数 ${nAns}`);
+    console.log(`今までにやった問題数 ${ntrial_total}`);
     console.log(quizArray);
 
     setIsAnswered(false);

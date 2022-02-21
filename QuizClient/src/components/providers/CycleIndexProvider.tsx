@@ -4,7 +4,7 @@ import React, {
   Dispatch,
   ReactNode,
   SetStateAction,
-  useState
+  useState,
 } from "react";
 
 // 保持する変数と設定関数
@@ -23,7 +23,8 @@ export const CycleContext = createContext<CycleContextType>(
 export const CycleIndexProvider = (props: { children: ReactNode }) => {
   const { children } = props;
   // 再レンダリングする規模によっては変数と関数は別にしたほうが良い場合もある
-  const [ncycle, setCycle] = useState<number>(0);
+  // サイクル数は１から始める
+  const [ncycle, setCycle] = useState<number>(1);
   return (
     <CycleContext.Provider value={{ ncycle, setCycle }}>
       {children}

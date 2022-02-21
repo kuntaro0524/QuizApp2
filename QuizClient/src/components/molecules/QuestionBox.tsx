@@ -12,10 +12,17 @@ import { useQuiz } from "../hooks/useQuiz";
 import axios from "axios";
 import { QuizInfo } from "../types/api/quizinfo";
 
-export const QuestionBox = () => {
-  const { quizArray, setQuizArray} = useQuiz();
+type Props = {
+  isFilter: boolean;
+  filter_ratio: number;
+};
 
-  const [ncycle, setCycle] = useState(0);
+export const QuestionBox = (props: Props) => {
+  const { quizArray, setQuizArray } = useQuiz();
+  const { isFilter, filter_ratio } = props;
+
+  const { ncycle, setCycle } = useCycleNum();
+  // const [ncycle, setCycle] = useState(0);
   const [nAns, setNans] = useState(0);
   const [nCorrTotal, setNcorrTotal] = useState(0);
 
@@ -47,18 +54,18 @@ export const QuestionBox = () => {
   };
 
   const onClickEnd = () => {
-    console.log(typeof(quizArray));
-    quizArray.map(eachquiz => {
+    console.log(typeof quizArray);
+    quizArray.map((eachquiz) => {
       console.log(eachquiz._id);
       console.log(eachquiz.ntrial);
       const quiz_id = eachquiz._id;
-      let quiz_url = `http://192.168.99.123:9201/quiz/${quiz_id}`;
+      // let quiz_url = `http://192.168.99.123:9201/quiz/${quiz_id}`;
+      let quiz_url = `http://localhost:9201/quiz/${quiz_id}`;
       axios
-        .patch<Array<QuizInfo>>(quiz_url, eachquiz, 
-        {
+        .patch<Array<QuizInfo>>(quiz_url, eachquiz, {
           headers: {
             "Access-Control-Allow-Origin": "*",
-          }
+          },
         })
         .then((res) => {
           console.log(res);
@@ -81,14 +88,26 @@ export const QuestionBox = () => {
           }
           console.log(error.config);
         });
-      })
-  }
+    });
+  };
+
+  const filterQuizes = (corr_threshold: number) => {
+    console.log(`Filtered!! ${corr_threshold}`);
+    const filtered_quiz = quizArray.filter(
+      (quiz) => quiz.corr_ratio < corr_threshold
+    );
+    console.log("<<<< before >>>>>");
+    console.log(quizArray);
+    console.log("<<<< after >>>>>");
+    setQuizArray(filtered_quiz);
+    console.log(quizArray);
+  };
 
   // 次のクイズボタンを押したらインデックスが変わる
   const onClickNextQuestion = () => {
     console.log("Button was pushed");
-    console.log("Correct Flag="+isCorrect);
-    
+    console.log("Correct Flag=" + isCorrect);
+
     // 各設問に対する成績を埋めていくわけです
     // この問題の成績を更新する
     const new_ntry = currQ.ntrial + 1;
@@ -97,12 +116,12 @@ export const QuestionBox = () => {
     if (isCorrect) {
       new_ncorr = new_ncorr + 1;
       console.log(new_ncorr);
-      
+
       // 全体の正解数も記録更新
       setNcorrTotal(nCorrTotal + 1);
     }
     // この問題の正答率を計算しておく
-    let tmp_corr_ratio = new_ncorr / new_ntry * 100.0;
+    let tmp_corr_ratio = (new_ncorr / new_ntry) * 100.0;
     let copy_to_change = {
       ...currQ,
       ntrial: new_ntry,
@@ -113,7 +132,7 @@ export const QuestionBox = () => {
     console.log("############################3");
     console.log(copy_to_change);
     console.log("############################3");
-    
+
     let copy_quizes = [...quizArray];
 
     copy_quizes.splice(qindex, 1, copy_to_change);
@@ -121,15 +140,20 @@ export const QuestionBox = () => {
 
     // クイズのインデックスをインクリメント
     let nextIndex = qindex + 1;
+    // もしもすべてのクイズが終わったら
     if (quizArray.length === nextIndex) {
       console.log("next index is reset to 0.");
       nextIndex = 0;
       setCycle(ncycle + 1);
+      setQindex(0);
+      // ここでフィルターフラグがあればフィルターしてしまう;
+      filterQuizes(filter_ratio);
+    } else {
+      // 今回何問問題をやっているか
+      setQindex(qindex + 1);
     }
-
-    // 今回何問問題をやっているか
-    setQindex(qindex+1);
     setNans(nAns + 1);
+    console.log(`サイクル数 ${ncycle}`);
     console.log(`今までにやった問題数 ${nAns}`);
     console.log(quizArray);
 
@@ -147,12 +171,12 @@ export const QuestionBox = () => {
           : 0.0}
         :
       </h1>
-      <Flex bg="darkgreen.100" >
+      <Flex bg="darkgreen.100">
         <Box>
           <Stack spacing={3}>
             <Text fontSize="3xl"> This is it </Text>
             <Text fontSize="3xl"> {currQ.question} </Text>
-             <Input
+            <Input
               value={userAnswer}
               fontSize="3xl"
               placeholder="ここに答えを書く"

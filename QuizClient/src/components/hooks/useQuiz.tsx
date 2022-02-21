@@ -10,33 +10,40 @@ import { QuizInfo } from "../types/api/quizinfo";
 type Props = {
   start_page: number;
   end_page: number;
-}
+};
 
 export const useQuiz = () => {
   const { quizArray, setQuizArray } = useContext(AllQuizContext);
   // (NtrialContextType) => useContext(AllQuizContext);
   const [isRead, setIsRead] = useState<boolean>(false);
 
-  const useDBs = ((props:Props) => {
-    const {start_page, end_page} = props;
+  const useDBs = (props: Props) => {
+    const { start_page, end_page } = props;
 
     useEffect(() => {
       axios
-        // .get<Array<QuizInfo>>("http://localhost:9201/quiz", {
-        .get<Array<QuizInfo>>("http://192.168.99.123:9201/quiz", {
+        .get<Array<QuizInfo>>("http://localhost:9201/quiz", {
+          // .get<Array<QuizInfo>>("http://192.168.99.123:9201/quiz", {
+          // .get<Array<QuizInfo>>("http://10.10.122.179:9201/quiz", {
           headers: {
             "Access-Control-Allow-Origin": "*",
           },
         })
         .then((res) => {
-          console.log(quizArray);
-          const filtered_quiz = res.data.filter(quiz => quiz.page >= start_page && quiz.page <=end_page);
+          console.log("<<<< Before >>>>>");
+          console.log(res.data);
+
+          const filtered_quiz = res.data.filter(
+            (quiz) => quiz.page >= start_page && quiz.page <= end_page
+          );
+          console.log("<<<< after >>>>>");
           setQuizArray(filtered_quiz);
           console.log(quizArray);
         })
         .catch(function (error) {
           console.log("ERROR?");
           console.log(error.config);
+          console.log(error);
           for (let key of Object.keys(error)) {
             console.log(key);
             console.log(error[key]);
@@ -53,7 +60,7 @@ export const useQuiz = () => {
           console.log(error.config);
         });
     }, []);
-  });
+  };
 
-  return { quizArray, setQuizArray, useDBs};
+  return { quizArray, setQuizArray, useDBs };
 };

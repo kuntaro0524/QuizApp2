@@ -22,11 +22,11 @@ export const ScoreTable: VFC = memo(() => {
   // サイクル数はContextのフックスを利用する
   // Providerで定義したサイクル数のフックス
   const { ncycle, setCycle } = useCycleNum();
-  const { all_result, setResult } = useResult();
-  const { ncorr_total, setNcorrTotal } = useNcorr();
-  const { ntrial_total, setNtrialTotal } = useNtry();
+  // const { all_result, setResult } = useResult();
+  // const { ncorr_total, setNcorrTotal } = useNcorr();
+  // const { ntrial_total, setNtrialTotal } = useNtry();
 
-  let correct_ratio = ((ncorr_total / ntrial_total) * 100.0).toFixed(2.0);
+  // let correct_ratio = ((ncorr_total / ntrial_total) * 100.0).toFixed(2.0);
 
   return (
     <Table size="md" variant="simple" colorScheme="black">
@@ -44,13 +44,16 @@ export const ScoreTable: VFC = memo(() => {
       <Tbody>
         <Tr>
           <Td fontSize="20px" textAlign="center">
-            {ntrial_total}
+            {/* {ntrial_total} */}
+            50
           </Td>
           <Td fontSize="20px" textAlign="center">
-            {ncorr_total}
+            {/* {ncorr_total} */}
+            40
           </Td>
           <Td fontSize="20px" textAlign="center" isNumeric>
-            {correct_ratio}
+            {/* {correct_ratio} */}
+            30
           </Td>
           <Td fontSize="20px" textAlign="center" isNumeric>
             {ncycle}

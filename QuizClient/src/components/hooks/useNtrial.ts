@@ -4,7 +4,7 @@ import { useContext } from "react";
 
 import {
   NtrialContext,
-  NtrialContextType
+  NtrialContextType,
 } from "../providers/NumTrialProvider";
 
 export const useNtry = (): NtrialContextType => useContext(NtrialContext);

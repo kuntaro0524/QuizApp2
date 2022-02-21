@@ -1,11 +1,13 @@
-
 import { useContext } from "react";
 
 // useContextを利用していることをカプセル化するためのクラス（らしい）
 
 import {
   CycleContext,
-  CycleContextType
+  CycleContextType,
 } from "../providers/CycleIndexProvider";
 
-export const useCycleNum = (): CycleContextType => useContext(CycleContext);
+export const useCycleNum = () => {
+  const { ncycle, setCycle } = useContext(CycleContext);
+  return { ncycle, setCycle };
+};

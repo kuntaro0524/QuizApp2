@@ -69,8 +69,8 @@ export const QuestionBox = (props: Props) => {
       console.log(eachquiz._id);
       console.log(eachquiz.ntrial);
       const quiz_id = eachquiz._id;
-      // let quiz_url = `http://192.168.99.123:9201/quiz/${quiz_id}`;
-      let quiz_url = `http://localhost:9201/quiz/${quiz_id}`;
+      let quiz_url = `http://192.168.99.123:9201/quiz/${quiz_id}`;
+      // let quiz_url = `http://localhost:9201/quiz/${quiz_id}`;
       axios
         .patch<Array<QuizInfo>>(quiz_url, eachquiz, {
           headers: {
@@ -183,7 +183,7 @@ export const QuestionBox = (props: Props) => {
       <h1>
         この問題の過去の正答率
         {currQ.ntrial != 0
-          ? ((currQ.ncorr / currQ.ntrial) * 100.0).toFixed(1)
+          ? ((currQ.ncorr / currQ.ntrial) * 100.0).toFixed(2)
           : 0.0}
         :
       </h1>

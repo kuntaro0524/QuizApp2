@@ -23,7 +23,7 @@ export const NtrialContext = createContext<NtrialContextType>(
 export const NtrialProvider = (props: { children: ReactNode }) => {
   const { children } = props;
   // 再レンダリングする規模によっては変数と関数は別にしたほうが良い場合もある
-  const [ntrial_total, setNtrialTotal] = useState<number>(1);
+  const [ntrial_total, setNtrialTotal] = useState<number>(0);
   return (
     // ContextTypeを定義するときに利用した変数名にしておかないといけないらしい
     <NtrialContext.Provider value={{ ntrial_total, setNtrialTotal }}>

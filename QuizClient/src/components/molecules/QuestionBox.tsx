@@ -140,17 +140,22 @@ export const QuestionBox = (props: Props) => {
       corr_ratio: tmp_corr_ratio,
     };
 
-    console.log("############################3");
+    console.log("###### この要素を置換する #####3");
     console.log(copy_to_change);
     console.log("############################3");
 
     let copy_quizes = [...quizArray];
 
     copy_quizes.splice(qindex, 1, copy_to_change);
+    console.log("新しい配列としてセットします。");
+    // console.log(copy_quizes);
     setQuizArray(copy_quizes);
+    console.log("新しい配列としてセットします");
 
     // クイズのインデックスをインクリメント
     let nextIndex = qindex + 1;
+    console.log(`クイズサイズ ${quizArray.length} 次 ${nextIndex}`);
+
     // もしもすべてのクイズが終わったら
     if (quizArray.length === nextIndex) {
       console.log("next index is reset to 0.");

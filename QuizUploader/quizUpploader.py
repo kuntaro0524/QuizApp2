@@ -35,8 +35,8 @@ json_strings = df.to_json(orient='records')
 parsed = json.loads(json_strings)
 
 db = client.ibukiquiz
-col = db.shakai
-#col = db.english
+#col = db.shakai
+col = db.english
 
 # shakaiのクイズDBへの登録
 result = col.insert_many(parsed)

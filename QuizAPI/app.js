@@ -40,10 +40,41 @@ const quiz_schema = {
 };
 
 /* definitions of data record on the database: 'ibukiquiz'*/
-const QuizInfo = mongoose.model("pppp", quiz_schema, "shakai");
+// const QuizInfo = mongoose.model("pppp", quiz_schema, "shakai");
+// const EngInfo = mongoose.model("qqqq", quiz_schema, "english");
+// var connection = mongoose.createConnection();
 
 app.get("/quiz", function (req, res) {
   QuizInfo.find(function (err, foundItems) {
+    res.send(foundItems);
+  });
+});
+
+// app.get("/english", function (req, res) {
+//   EngInfo.find(function (err, foundItems) {
+//     res.send(foundItems);
+//   });
+// });
+
+// 2022/02/22やったところで最も重要な部分
+// 内容としてはあんまりよくわかっていないけどやりたかったのは社会のクイズ、英語のクイズがMongodbに別のcollection で存在しているとき
+// それらをURLのパラメータを変更することでGETの値として別のものを返すということ
+// 何が難しかったのかというと、１回目のアクセスで mongoose でモデルを作成すると、２回目以降のアクセスでは「すでにあるよ」って言われてエラーが出ること
+// 仕様としてそれは理解できたけど、存在している場合には「再作成しなくても良いよ」という指定をどうするかわからなかった。
+// 以下のサイトにこれでうまくいくよ、と書いてあったのでそれを流用したらうまくいった、というだけ。
+// https://lifesaver.codes/answer/overwritemodelerror-cannot-overwrite-xxx-model-once-compiled-1418
+
+app.get("/:subject", function (req, res) {
+  let quizSchema = null;
+  const quizType = req.params.subject;
+  const info_title = `Q${quizType}`;
+  console.log(info_title);
+  try {
+    quizSchema = mongoose.model(info_title, quiz_schema, quizType);
+  } catch (e) {
+    quizSchema = mongoose.model(info_title);
+  }
+  quizSchema.find(function (err, foundItems) {
     res.send(foundItems);
   });
 });

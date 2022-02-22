@@ -19,12 +19,17 @@ import {
   RangeSliderFilledTrack,
   RangeSliderThumb,
   RangeSliderTrack,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+  Text,
 } from "@chakra-ui/react";
 
 export const QuizLayout = () => {
   // axiosを利用してクイズをすべて読み込んでいる
   // recoilを利用して quizState.js で設定したグローバル変数と関数へアクセス
-  const { quizArray, setQuizArray, useDBs } = useQuiz();
+  const { quizArray, setQuizArray, useDBs, isRead, qNum } = useQuiz();
   const [thresh, setThresh] = useState(75.0);
 
   // const onChangeThresh = (e: ChangeEvent<HTMLInputElement>) => {
@@ -32,52 +37,77 @@ export const QuizLayout = () => {
   //   setThresh(parseFloat(e.target.value));
   // };
 
-  let props = { start_page: 42, end_page: 43 };
-  
-  useDBs(props);
-
-  // console.log(filtered_quiz);
-
   // サイクルが一周したときに正答率でフィルタをかけるかどうかのフラグ
   // デフォルトはtrue
   const [isFilter, setFilter] = useState(true);
+  const [pageStart, setPageStart] = useState(0);
+  const [pageEnd, setPageEnd] = useState(1000);
+
+  let values = { start_page: pageStart, end_page: pageEnd };
+
+  useDBs(values);
+
+  if (isRead) {
+    if (qNum === 0) {
+      console.log("Nothingsssssss");
+    }
+  }
+
+  const [value, setValue] = useState(75);
+
+  const defineRange = (props: number[]) => {
+    const [start, end] = props;
+    setPageStart(start);
+    setPageEnd(end);
+    let values = { start_page: start, end_page: end };
+  };
 
   return (
     <>
+      {isRead && qNum === 0 ? <h1> Nothing!!! </h1> : null}
       <Flex>
-      <Checkbox isChecked={isFilter} onChange={(e) => setFilter(!isFilter)}>
-        {isFilter ? (
-          <h1> １サイクル終わったら正答率によってフィルタをかける </h1>
-        ) : (
-          <h1>１サイクル終わったら正答率によってフィルタをかけない</h1>
-        )}
-      </Checkbox>
+        <Checkbox isChecked={isFilter} onChange={(e) => setFilter(!isFilter)}>
+          {isFilter ? <h1>正答率フィルタON </h1> : <h1>正答率フィルタOFF</h1>}
+        </Checkbox>
       </Flex>
-      <FormControl isDisabled={!isFilter}>
-        <Flex>
-        <FormLabel htmlFor='amount'>正答率しきい値</FormLabel>
-          <NumberInput value={thresh} width={100} max={100} min={1} onChange={(valuestring)=>setThresh(parseFloat(valuestring))}>
-            <NumberInputField id='amount' />
-          <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-          </NumberInputStepper>
-          </NumberInput>
-        <FormLabel htmlFor='percent'>%</FormLabel>
-        </Flex>
-        <h1> {thresh} </h1>
-        {/* <Flex>
-          <RangeSlider aria-label={['min', 'max']} defaultValue={[1, 500]}>
-  <RangeSliderTrack>
-    <RangeSliderFilledTrack />
-  </RangeSliderTrack>
-  <RangeSliderThumb index={0} />
-  <RangeSliderThumb index={1} />
-</RangeSlider>
-        </Flex> */}
-      </FormControl>
+      <Flex>
+        <RangeSlider
+          aria-label={["min", "max"]}
+          min={0}
+          max={1000}
+          step={1}
+          // value={[200, 800]}
+          onChangeEnd={defineRange}
+          // onChangeStart={(val) => setPageStart(val[0])}
+        >
+          <RangeSliderTrack>
+            <RangeSliderFilledTrack />
+          </RangeSliderTrack>
+          <RangeSliderThumb index={0} />
+          <RangeSliderThumb index={1} />
+        </RangeSlider>
+        <p>
+          {pageStart} {pageEnd}
+        </p>
+      </Flex>
+      <Flex>
+        <Slider
+          isDisabled={!isFilter}
+          defaultValue={75}
+          min={0}
+          max={100}
+          step={25}
+          onChange={setThresh}
+        >
+          <SliderTrack bg="red.100">
+            <SliderFilledTrack bg="tomato" />
+          </SliderTrack>
+          <SliderThumb boxSize={6} />
+        </Slider>
+        <Text textAlign="center">{thresh}%</Text>
+      </Flex>
       <ScoreTable />
-      <QuestionBox isFilter={isFilter} filter_ratio={30} />
+      <QuestionBox isFilter={isFilter} filter_ratio={thresh} />
     </>
   );
 };

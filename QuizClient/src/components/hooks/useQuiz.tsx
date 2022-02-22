@@ -28,7 +28,7 @@ export const useQuiz = () => {
       axios
         // .get<Array<QuizInfo>>("http://localhost:9201/quiz", {
         // .get<Array<QuizInfo>>("http://192.168.99.123:9201/quiz", {
-        .get<Array<QuizInfo>>("http://10.10.122.179:9201/quiz", {
+        .get<Array<QuizInfo>>("http://10.10.122.179:9201/english", {
           headers: {
             "Access-Control-Allow-Origin": "*",
           },

@@ -181,16 +181,16 @@ export const QuestionBox = (props: Props) => {
   return (
     <div>
       <h1>
-        この問題の過去の正答率
+        この問題の過去の正答率:
         {currQ.ntrial != 0
           ? ((currQ.ncorr / currQ.ntrial) * 100.0).toFixed(2)
-          : 0.0}
+          : " no results"}
         :
       </h1>
       <Flex bg="darkgreen.100">
         <Box>
           <Stack spacing={3}>
-            <Text fontSize="3xl"> This is it </Text>
+            {/* <Text fontSize="3xl"> This is it </Text> */}
             <Text fontSize="3xl"> {currQ.question} </Text>
             <Input
               value={userAnswer}

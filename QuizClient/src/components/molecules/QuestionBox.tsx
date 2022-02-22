@@ -188,10 +188,12 @@ export const QuestionBox = (props: Props) => {
         :
       </h1>
       <Flex bg="darkgreen.100">
-        <Box>
-          <Stack spacing={3}>
+        <Box h={50}>
+          <Stack spacing={5}>
             {/* <Text fontSize="3xl"> This is it </Text> */}
-            <Text fontSize="3xl"> {currQ.question} </Text>
+            <Box h={100}>
+              <Text fontSize="3xl"> {currQ.question} </Text>
+            </Box>
             <Input
               value={userAnswer}
               fontSize="3xl"

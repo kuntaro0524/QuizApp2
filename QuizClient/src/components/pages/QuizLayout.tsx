@@ -40,7 +40,7 @@ export const QuizLayout = () => {
   // サイクルが一周したときに正答率でフィルタをかけるかどうかのフラグ
   // デフォルトはtrue
   const [isFilter, setFilter] = useState(true);
-  const [pageStart, setPageStart] = useState(0);
+  const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(1000);
 
   let values = { start_page: pageStart, end_page: pageEnd };
@@ -70,7 +70,7 @@ export const QuizLayout = () => {
           {isFilter ? <h1>正答率フィルタON </h1> : <h1>正答率フィルタOFF</h1>}
         </Checkbox>
       </Flex>
-      <Flex>
+      {/* <Flex>
         <RangeSlider
           aria-label={["min", "max"]}
           min={0}
@@ -89,7 +89,7 @@ export const QuizLayout = () => {
         <p>
           {pageStart} {pageEnd}
         </p>
-      </Flex>
+      </Flex> */}
       <Flex>
         <Slider
           isDisabled={!isFilter}

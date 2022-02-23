@@ -63,14 +63,13 @@ export const QuestionBox = (props: Props) => {
     setIsAnswered(true);
   };
 
-  const onClickEnd = () => {
+  const updateDB=()=> {
     console.log(typeof quizArray);
     quizArray.map((eachquiz) => {
       console.log(eachquiz._id);
       console.log(eachquiz.ntrial);
       const quiz_id = eachquiz._id;
-      let quiz_url = `http://192.168.99.123:9201/quiz/${quiz_id}`;
-      // let quiz_url = `http://localhost:9201/quiz/${quiz_id}`;
+      let quiz_url = `http://192.168.99.123:9201/english/${quiz_id}`;
       axios
         .patch<Array<QuizInfo>>(quiz_url, eachquiz, {
           headers: {
@@ -99,13 +98,18 @@ export const QuestionBox = (props: Props) => {
           console.log(error.config);
         });
     });
+  }
+
+  const onClickEnd = () => {
+    updateDB();
   };
 
   const filterQuizes = (corr_threshold: number) => {
     console.log(`Filtered!! ${corr_threshold}`);
     const filtered_quiz = quizArray.filter(function (quiz) {
       console.log(quiz.corr_ratio);
-      return quiz.corr_ratio < corr_threshold;
+      return (quiz.ntrial < 2) || (quiz.corr_ratio < corr_threshold);
+      // return quiz.corr_ratio < corr_threshold;
     });
     console.log("<<<< before >>>>>");
     console.log(quizArray);
@@ -164,6 +168,7 @@ export const QuestionBox = (props: Props) => {
       setQindex(0);
       // ここでフィルターフラグがあればフィルターしてしまう;
       filterQuizes(filter_ratio);
+      updateDB();
     } else {
       // 今回何問問題をやっているか
       setQindex(qindex + 1);
@@ -215,7 +220,7 @@ export const QuestionBox = (props: Props) => {
                 </MyButton>
               </Box>
               <Box>
-                <MyButton onClick={onClickEnd} colorScheme="red">
+                <MyButton isDisabled={true} onClick={onClickEnd} colorScheme="red">
                   Finish this quiz.
                 </MyButton>
               </Box>

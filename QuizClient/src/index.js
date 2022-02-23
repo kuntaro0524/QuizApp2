@@ -3,12 +3,12 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { RecoilRoot } from "recoil";
+import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.render(
-  <RecoilRoot>
+  <BrowserRouter>
     <App />
-  </RecoilRoot>,
+  </BrowserRouter>,
   document.getElementById("root")
 );
 

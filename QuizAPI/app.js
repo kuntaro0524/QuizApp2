@@ -29,6 +29,8 @@ app.use(express.static("public"));
 var cors = require("cors");
 app.use(cors());
 
+let quizSchema = null;
+
 const quiz_schema = {
   question: String,
   answer: String,
@@ -65,7 +67,6 @@ app.get("/quiz", function (req, res) {
 // https://lifesaver.codes/answer/overwritemodelerror-cannot-overwrite-xxx-model-once-compiled-1418
 
 app.get("/:subject", function (req, res) {
-  let quizSchema = null;
   const quizType = req.params.subject;
   const info_title = `Q${quizType}`;
   console.log(info_title);
@@ -78,6 +79,8 @@ app.get("/:subject", function (req, res) {
     res.send(foundItems);
   });
 });
+
+
 
 /* json dataを登録するための手続き */
 // しばらくは使わないだろう→クイズをクライアントで編集する
@@ -106,6 +109,66 @@ app.delete("/quiz", function (req, res) {
     }
   });
 });
+
+app
+  .route("/:subject/:quizID")
+  .get(function (req, res) {
+    const mid = req.params.quizID;
+    quizSchema.findOne({ _id: mid }, function (err, foundCond) {
+      if (foundCond) {
+        res.send(foundCond);
+      } else {
+        res.send(err);
+      }
+    });
+  })
+  .put(function (req, res) {
+    const mid = req.params.quizID;
+    console.log("PPPP=" + mid);
+    /* JSON data */
+    const newCond = req.body;
+    console.log(newCond);
+    QuizInfo.updateOne(
+      /* conditions */
+      { _id: mid },
+      { $set: newCond },
+      { overwrite: true },
+      function (err) {
+        if (!err) {
+          res.send("Successfully updated article.");
+        } else {
+          res.send("ERRORERROR");
+        }
+      }
+    );
+  })
+  /* 正直、メカニズムは理解できていないがこれにより、URLで与えられたIDの条件の一つずつを指定して
+　　更新できるようになった。 */
+  .patch(function (req, res) {
+    const mid = req.params.quizID;
+    console.log("PPPP=" + mid);
+    /* JSON data */
+    /* 受け取るのはJSONそのもの */
+    /* condの中身のパラメータを一つでも保有していればOK */
+    const newCond = req.body;
+    console.log(newCond);
+
+    QuizInfo.updateOne(
+      /* conditions */
+      { _id: mid },
+      /* この部分にrequestから受け取ったJSONを入れる */
+      { $set: newCond },
+      { overwrite: true },
+      function (err) {
+        if (!err) {
+          res.send("Successfully updated article.");
+        } else {
+          res.send("ERRORERROR");
+        }
+      }
+    );
+  })
+
 
 /* IDを指定してその情報に対して　get/post などする*/
 // このアプリではやった回数と正答率などはクライアント側からアップデートしたいのでそのときには使う

@@ -28,8 +28,12 @@ export const useQuiz = () => {
   // (NtrialContextType) => useContext(AllQuizContext);
   const [isRead, setIsRead] = useState<boolean>(false);
   const [qNum, setQnum] = useState<number>(0);
+  const [isCorrect, setIsCorrect] = useState<boolean>(false);
 
   const patchQuiz = (props2: Props2) => {
+    console.log("patchQuiz was called.");
+
+    setIsCorrect(true);
     let { subject, id, newQuiz } = props2;
     // let quiz_url = `http://192.168.99.123:9201/${category}/${quiz_id}`;
     // let quiz_url = `http://192.168.99.123:9201/${category}/${quiz_id}`;
@@ -41,7 +45,9 @@ export const useQuiz = () => {
         },
       })
       .then((res) => {
-        console.log(res);
+        console.log("Success to update :" + id);
+
+        setIsCorrect(false);
       })
       .catch(function (error) {
         console.log("ERROR?");
@@ -61,6 +67,20 @@ export const useQuiz = () => {
         }
         console.log(error.config);
       });
+  };
+
+  type Props3 = {
+    subject: string;
+  };
+
+  const updateDB = (props3: Props3) => {
+    console.log("updateDB was called.");
+
+    let { subject } = props3;
+    quizArray.map((eachquiz) => {
+      const id = eachquiz._id;
+      patchQuiz({ subject, id, newQuiz: eachquiz });
+    });
   };
 
   const useDBs = (props: Props) => {
@@ -120,5 +140,5 @@ export const useQuiz = () => {
     }, []);
   };
 
-  return { quizArray, setQuizArray, useDBs, isRead, qNum, patchQuiz };
+  return { quizArray, setQuizArray, useDBs, isRead, qNum, patchQuiz, updateDB };
 };

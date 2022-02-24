@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Box, Flex, Input, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Input, Stack, Text } from "@chakra-ui/react";
 import { MyButton } from "../atoms/MyButton";
 // import { useRecoilState, useRecoilValue } from "recoil";
 // import { answerState, quizState, readState } from "../hooks/quizState";
@@ -188,6 +188,10 @@ export const QuestionBox = (props: Props) => {
     setUserAnswer("");
   };
 
+  const onClickCorrect = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log(e.target.value);
+  };
+
   return (
     <div>
       <h1>
@@ -208,6 +212,7 @@ export const QuestionBox = (props: Props) => {
               value={userAnswer}
               fontSize="3xl"
               placeholder="ここに答えを書く"
+              width={800}
               onChange={onChangeInput}
             />
             <AnswerBox
@@ -233,6 +238,20 @@ export const QuestionBox = (props: Props) => {
                   Finish this quiz.
                 </MyButton>
               </Box>
+            </Flex>
+            <Flex>
+              <Button
+                // id={currQ._id}
+                // value={currQ._id}
+                value={currQ._id}
+                onClick={onClickCorrect}
+                colorScheme={"blue"}
+                m={50}
+                w={150}
+                h={50}
+              >
+                Correct this quiz.
+              </Button>
             </Flex>
           </Stack>
         </Box>

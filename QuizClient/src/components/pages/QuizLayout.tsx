@@ -26,7 +26,16 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-export const QuizLayout = () => {
+type Props = {
+  subject: string;
+  start_page: number;
+  end_page: number;
+  category: string;
+};
+
+export const QuizLayout = (props: Props) => {
+  // 引数からパラメータを受け取って格納
+  const { subject, start_page, end_page, category } = props;
   // axiosを利用してクイズをすべて読み込んでいる
   // recoilを利用して quizState.js で設定したグローバル変数と関数へアクセス
   const { quizArray, setQuizArray, useDBs, isRead, qNum } = useQuiz();
@@ -40,10 +49,15 @@ export const QuizLayout = () => {
   // サイクルが一周したときに正答率でフィルタをかけるかどうかのフラグ
   // デフォルトはtrue
   const [isFilter, setFilter] = useState(true);
-  const [pageStart, setPageStart] = useState(1);
-  const [pageEnd, setPageEnd] = useState(1000);
+  const [pageStart, setPageStart] = useState(start_page);
+  const [pageEnd, setPageEnd] = useState(end_page);
 
-  let values = { start_page: pageStart, end_page: pageEnd };
+  let values = {
+    start_page: pageStart,
+    end_page: pageEnd,
+    subject: subject,
+    category: category,
+  };
 
   useDBs(values);
 
@@ -107,7 +121,11 @@ export const QuizLayout = () => {
         <Text textAlign="center">{thresh}%</Text>
       </Flex>
       <ScoreTable />
-      <QuestionBox isFilter={isFilter} filter_ratio={thresh} />
+      <QuestionBox
+        isFilter={isFilter}
+        filter_ratio={thresh}
+        subject={subject}
+      />
     </>
   );
 };

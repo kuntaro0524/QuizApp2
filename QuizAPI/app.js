@@ -36,6 +36,7 @@ const quiz_schema = {
   answer: String,
   page: Number,
   made_date: String,
+  category: String,
   ntrial: Number,
   ncorr: Number,
   corr_ratio: Number,
@@ -79,8 +80,6 @@ app.get("/:subject", function (req, res) {
     res.send(foundItems);
   });
 });
-
-
 
 /* json dataを登録するための手続き */
 // しばらくは使わないだろう→クイズをクライアントで編集する
@@ -128,7 +127,7 @@ app
     /* JSON data */
     const newCond = req.body;
     console.log(newCond);
-    QuizInfo.updateOne(
+    quizSchema.updateOne(
       /* conditions */
       { _id: mid },
       { $set: newCond },
@@ -153,7 +152,7 @@ app
     const newCond = req.body;
     console.log(newCond);
 
-    QuizInfo.updateOne(
+    quizSchema.updateOne(
       /* conditions */
       { _id: mid },
       /* この部分にrequestから受け取ったJSONを入れる */
@@ -167,8 +166,7 @@ app
         }
       }
     );
-  })
-
+  });
 
 /* IDを指定してその情報に対して　get/post などする*/
 // このアプリではやった回数と正答率などはクライアント側からアップデートしたいのでそのときには使う

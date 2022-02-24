@@ -1,6 +1,7 @@
 import { filter } from "@chakra-ui/react";
 import axios from "axios";
 import { useCallback, useContext, useEffect, useState, VFC } from "react";
+import { DiagnosticCategory } from "typescript";
 import { AllQuizContext } from "../providers/QuizProvider";
 import { QuizInfo } from "../types/api/quizinfo";
 import { useMessage } from "./useMessage";
@@ -10,8 +11,10 @@ import { useMessage } from "./useMessage";
 // import { NtrialContext, NtrialContextType } from "../providers/QuizProvider";
 
 type Props = {
+  subject: string;
   start_page: number;
   end_page: number;
+  category: string;
 };
 
 export const useQuiz = () => {
@@ -21,14 +24,14 @@ export const useQuiz = () => {
   const [qNum, setQnum] = useState<number>(0);
 
   const useDBs = (props: Props) => {
-    const { start_page, end_page } = props;
+    const { start_page, end_page, subject, category } = props;
     const { showMessage } = useMessage();
 
     useEffect(() => {
       axios
         //  .get<Array<QuizInfo>>("http://localhost:9201/english", {
-        .get<Array<QuizInfo>>("http://192.168.99.123:9201/english", {
-        // .get<Array<QuizInfo>>("http://10.10.122.179:9201/english", {
+        // .get<Array<QuizInfo>>("http://192.168.99.123:9201/english", {
+        .get<Array<QuizInfo>>(`http://10.10.122.179:9201/${subject}`, {
           headers: {
             "Access-Control-Allow-Origin": "*",
           },
@@ -38,7 +41,10 @@ export const useQuiz = () => {
           console.log(res.data);
 
           const filtered_quiz = res.data.filter(
-            (quiz) => quiz.page >= start_page && quiz.page <= end_page
+            (quiz) =>
+              quiz.page >= start_page &&
+              quiz.page <= end_page &&
+              quiz.category === category
           );
           console.log("<<<< AFTER >>>>>" + filtered_quiz.length);
           if (filtered_quiz.length === 0) {

@@ -34,6 +34,7 @@ export const AllQuizProvider = (props: { children: ReactNode }) => {
       ntrial: 0,
       ncorr: 0,
       corr_ratio: 0.0,
+      category: "papa",
     },
   ]);
   return (

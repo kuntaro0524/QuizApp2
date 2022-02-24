@@ -3,6 +3,7 @@ export type QuizInfo = {
   question: string;
   answer: string;
   page: number;
+  category: string;
   made_date: string;
   ntrial: number;
   ncorr: number;

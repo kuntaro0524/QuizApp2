@@ -16,11 +16,14 @@ import { useTable } from "../hooks/useTable";
 type Props = {
   isFilter: boolean;
   filter_ratio: number;
+  subject: string;
 };
 
 export const QuestionBox = (props: Props) => {
   const { quizArray, setQuizArray } = useQuiz();
-  const { isFilter, filter_ratio } = props;
+  const { isFilter, filter_ratio, subject } = props;
+
+  console.log("SUBJECT=" + subject);
 
   // const { ncycle, setCycle } = useCycleNum();
   // const [ncycle, setCycle] = useState(0);
@@ -63,13 +66,15 @@ export const QuestionBox = (props: Props) => {
     setIsAnswered(true);
   };
 
-  const updateDB=()=> {
+  const updateDB = () => {
     console.log(typeof quizArray);
     quizArray.map((eachquiz) => {
       console.log(eachquiz._id);
       console.log(eachquiz.ntrial);
       const quiz_id = eachquiz._id;
-      let quiz_url = `http://192.168.99.123:9201/english/${quiz_id}`;
+      // let quiz_url = `http://192.168.99.123:9201/${category}/${quiz_id}`;
+      // let quiz_url = `http://192.168.99.123:9201/${category}/${quiz_id}`;
+      let quiz_url = `http://10.10.122.179:9201/${subject}/${quiz_id}`;
       axios
         .patch<Array<QuizInfo>>(quiz_url, eachquiz, {
           headers: {
@@ -98,7 +103,7 @@ export const QuestionBox = (props: Props) => {
           console.log(error.config);
         });
     });
-  }
+  };
 
   const onClickEnd = () => {
     updateDB();
@@ -108,7 +113,7 @@ export const QuestionBox = (props: Props) => {
     console.log(`Filtered!! ${corr_threshold}`);
     const filtered_quiz = quizArray.filter(function (quiz) {
       console.log(quiz.corr_ratio);
-      return (quiz.ntrial < 2) || (quiz.corr_ratio < corr_threshold);
+      return quiz.ntrial < 2 || quiz.corr_ratio < corr_threshold;
       // return quiz.corr_ratio < corr_threshold;
     });
     console.log("<<<< before >>>>>");
@@ -220,7 +225,11 @@ export const QuestionBox = (props: Props) => {
                 </MyButton>
               </Box>
               <Box>
-                <MyButton isDisabled={true} onClick={onClickEnd} colorScheme="red">
+                <MyButton
+                  isDisabled={true}
+                  onClick={onClickEnd}
+                  colorScheme="red"
+                >
                   Finish this quiz.
                 </MyButton>
               </Box>

@@ -1,8 +1,10 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import {
+  AspectRatio,
   Box,
   Button,
   Flex,
+  Image,
   Input,
   Stack,
   Text,
@@ -23,6 +25,7 @@ import { useTable } from "../hooks/useTable";
 import { CorrectModal } from "../organisms/CorrectModal";
 import { useSelectQuiz } from "../hooks/useSelectQuiz";
 import { useMessage } from "../hooks/useMessage";
+import { useMyImage } from "../hooks/useImage";
 
 type Props = {
   isFilter: boolean;
@@ -51,6 +54,9 @@ export const QuestionBox = (props: Props) => {
   let { isOpen, onOpen, onClose } = useDisclosure();
   // Modalを利用するために作ったカスタムフック
   const { selectedQuiz, onSelectQuiz } = useSelectQuiz();
+
+  // イメージを表示するためのフックス
+  const { displayJudgeImage } = useMyImage();
 
   // 各回答についてはQuestionBoxで寿命があるので良いかと
   const [userAnswer, setUserAnswer] = useState("");
@@ -221,16 +227,21 @@ export const QuestionBox = (props: Props) => {
               </Box>
             </Flex>
             <Flex>
-              <Button
-                value={currQ._id}
-                onClick={onClickCorrect}
-                colorScheme={"yellow"}
-                m={50}
-                w={150}
-                h={10}
-              >
-                Correct this quiz.
-              </Button>
+              <Box w={500} m={1}>
+                {displayJudgeImage({ isCorrect, isAnswered })}
+              </Box>
+              <Box>
+                <Button
+                  value={currQ._id}
+                  onClick={onClickCorrect}
+                  colorScheme={"yellow"}
+                  m={50}
+                  w={150}
+                  h={10}
+                >
+                  Correct this quiz.
+                </Button>
+              </Box>
             </Flex>
             <CorrectModal
               isOpen={isOpen}

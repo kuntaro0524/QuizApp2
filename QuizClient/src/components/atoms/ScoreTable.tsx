@@ -35,34 +35,36 @@ export const ScoreTable: VFC = memo(() => {
     correct_ratio = ((ncorr_total / ntrial_total) * 100.0).toFixed(2.0);
   }
   return (
-    <Table size="md" variant="simple" colorScheme="black">
-      <TableCaption>現状のまとめ</TableCaption>
-      <Thead>
-        <Tr>
-          <Th textAlign="center">これまでの問題数</Th>
-          <Th textAlign="center">これまでの正答数</Th>
-          <Th textAlign="center" isNumeric>
-            これまでの正答率（％）
-          </Th>
-          <Th textAlign="center"> 現在のサイクル数</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        <Tr>
-          <Td fontSize="20px" textAlign="center">
-            {ntrial_total}
-          </Td>
-          <Td fontSize="20px" textAlign="center">
-            {ncorr_total}
-          </Td>
-          <Td fontSize="20px" textAlign="center" isNumeric>
-            {correct_ratio}
-          </Td>
-          <Td fontSize="20px" textAlign="center" isNumeric>
-            {ncycle}
-          </Td>
-        </Tr>
-      </Tbody>
-    </Table>
+    <>
+      <Table size="md" variant="striped" colorScheme="blue">
+        <TableCaption>現状のまとめ</TableCaption>
+        <Thead>
+          <Tr>
+            <Th textAlign="center">これまでの問題数</Th>
+            <Th textAlign="center">これまでの正答数</Th>
+            <Th textAlign="center" isNumeric>
+              これまでの正答率（％）
+            </Th>
+            <Th textAlign="center"> 現在のサイクル数</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          <Tr>
+            <Td fontSize="20px" textAlign="center">
+              {ntrial_total}
+            </Td>
+            <Td fontSize="20px" textAlign="center">
+              {ncorr_total}
+            </Td>
+            <Td fontSize="20px" textAlign="center" isNumeric>
+              {correct_ratio}
+            </Td>
+            <Td fontSize="20px" textAlign="center" isNumeric>
+              {ncycle}
+            </Td>
+          </Tr>
+        </Tbody>
+      </Table>
+    </>
   );
 });

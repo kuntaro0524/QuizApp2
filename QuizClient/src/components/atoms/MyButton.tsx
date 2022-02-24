@@ -15,7 +15,7 @@ export const MyButton: VFC<Props> = (props) => {
     <Button
       isDisabled={isDisabled}
       mt={2}
-      mb={2}
+      mb={1}
       mr={2}
       ml={2}
       w={150}

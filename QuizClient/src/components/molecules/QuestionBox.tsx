@@ -1,5 +1,15 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Box, Flex, Input, Stack, Text } from "@chakra-ui/react";
+import {
+  AspectRatio,
+  Box,
+  Button,
+  Flex,
+  Image,
+  Input,
+  Stack,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { MyButton } from "../atoms/MyButton";
 // import { useRecoilState, useRecoilValue } from "recoil";
 // import { answerState, quizState, readState } from "../hooks/quizState";
@@ -12,6 +22,10 @@ import { useQuiz } from "../hooks/useQuiz";
 import axios from "axios";
 import { QuizInfo } from "../types/api/quizinfo";
 import { useTable } from "../hooks/useTable";
+import { CorrectModal } from "../organisms/CorrectModal";
+import { useSelectQuiz } from "../hooks/useSelectQuiz";
+import { useMessage } from "../hooks/useMessage";
+import { useMyImage } from "../hooks/useImage";
 
 type Props = {
   isFilter: boolean;
@@ -20,15 +34,12 @@ type Props = {
 };
 
 export const QuestionBox = (props: Props) => {
-  const { quizArray, setQuizArray } = useQuiz();
+  const { quizArray, setQuizArray, updateDB } = useQuiz();
   const { isFilter, filter_ratio, subject } = props;
 
-  console.log("SUBJECT=" + subject);
+  const { showMessage } = useMessage();
 
-  // const { ncycle, setCycle } = useCycleNum();
-  // const [ncycle, setCycle] = useState(0);
-  // const [nAns, setNans] = useState(0);
-  // const [nCorrTotal, setNcorrTotal] = useState(0);
+  console.log("SUBJECT=" + subject);
 
   const {
     ncycle,
@@ -38,6 +49,14 @@ export const QuestionBox = (props: Props) => {
     setNtrialTotal,
     setNcorrTotal,
   } = useTable();
+
+  // Modalを利用するための手順
+  let { isOpen, onOpen, onClose } = useDisclosure();
+  // Modalを利用するために作ったカスタムフック
+  const { selectedQuiz, onSelectQuiz } = useSelectQuiz();
+
+  // イメージを表示するためのフックス
+  const { displayJudgeImage } = useMyImage();
 
   // 各回答についてはQuestionBoxで寿命があるので良いかと
   const [userAnswer, setUserAnswer] = useState("");
@@ -66,47 +85,8 @@ export const QuestionBox = (props: Props) => {
     setIsAnswered(true);
   };
 
-  const updateDB = () => {
-    console.log(typeof quizArray);
-    quizArray.map((eachquiz) => {
-      console.log(eachquiz._id);
-      console.log(eachquiz.ntrial);
-      const quiz_id = eachquiz._id;
-      // let quiz_url = `http://192.168.99.123:9201/${category}/${quiz_id}`;
-      // let quiz_url = `http://192.168.99.123:9201/${category}/${quiz_id}`;
-      let quiz_url = `http://10.10.122.179:9201/${subject}/${quiz_id}`;
-      axios
-        .patch<Array<QuizInfo>>(quiz_url, eachquiz, {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-          },
-        })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch(function (error) {
-          console.log("ERROR?");
-          console.log(error.config);
-          for (let key of Object.keys(error)) {
-            console.log(key);
-            console.log(error[key]);
-          }
-          if (error.response) {
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-          } else if (error.request) {
-            console.log(error.request);
-          } else {
-            console.log("Error", error.message);
-          }
-          console.log(error.config);
-        });
-    });
-  };
-
   const onClickEnd = () => {
-    updateDB();
+    updateDB({ subject: subject });
   };
 
   const filterQuizes = (corr_threshold: number) => {
@@ -127,6 +107,13 @@ export const QuestionBox = (props: Props) => {
   const onClickNextQuestion = () => {
     console.log("Button was pushed");
     console.log("Correct Flag=" + isCorrect);
+
+    if (!isAnswered) {
+      const title = "まだ答えていないのではないですか？";
+      const status = "error";
+      showMessage({ title, status });
+      return;
+    }
 
     // 各設問に対する成績を埋めていくわけです
     // この問題の成績を更新する
@@ -173,7 +160,7 @@ export const QuestionBox = (props: Props) => {
       setQindex(0);
       // ここでフィルターフラグがあればフィルターしてしまう;
       filterQuizes(filter_ratio);
-      updateDB();
+      updateDB({ subject: subject });
     } else {
       // 今回何問問題をやっているか
       setQindex(qindex + 1);
@@ -186,6 +173,12 @@ export const QuestionBox = (props: Props) => {
     setIsAnswered(false);
     setIsCorrect(false);
     setUserAnswer("");
+  };
+
+  const onClickCorrect = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const id = e.currentTarget.value;
+    onSelectQuiz({ id, quizArray, onOpen });
+    console.log(e.currentTarget.value);
   };
 
   return (
@@ -208,6 +201,7 @@ export const QuestionBox = (props: Props) => {
               value={userAnswer}
               fontSize="3xl"
               placeholder="ここに答えを書く"
+              width={800}
               onChange={onChangeInput}
             />
             <AnswerBox
@@ -215,16 +209,14 @@ export const QuestionBox = (props: Props) => {
               isAnswered={isAnswered}
               isCorrect={isCorrect}
             />
-            <Flex>
+            <Flex h={50}>
               <Box>
                 <MyButton onClick={onClickCheckAnswer} colorScheme="teal">
                   Check the answer
                 </MyButton>
-                <MyButton onClick={onClickNextQuestion} colorScheme="pink">
+                <MyButton onClick={onClickNextQuestion} colorScheme="blue">
                   Next question.
                 </MyButton>
-              </Box>
-              <Box>
                 <MyButton
                   isDisabled={true}
                   onClick={onClickEnd}
@@ -234,6 +226,29 @@ export const QuestionBox = (props: Props) => {
                 </MyButton>
               </Box>
             </Flex>
+            <Flex>
+              <Box w={500} m={1}>
+                {displayJudgeImage({ isCorrect, isAnswered })}
+              </Box>
+              <Box>
+                <Button
+                  value={currQ._id}
+                  onClick={onClickCorrect}
+                  colorScheme={"yellow"}
+                  m={50}
+                  w={150}
+                  h={10}
+                >
+                  Correct this quiz.
+                </Button>
+              </Box>
+            </Flex>
+            <CorrectModal
+              isOpen={isOpen}
+              onClose={onClose}
+              isAdmin={false}
+              quiz={selectedQuiz}
+            />
           </Stack>
         </Box>
       </Flex>

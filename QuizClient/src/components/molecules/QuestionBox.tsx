@@ -1,5 +1,13 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Box, Button, Flex, Input, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Input,
+  Stack,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { MyButton } from "../atoms/MyButton";
 // import { useRecoilState, useRecoilValue } from "recoil";
 // import { answerState, quizState, readState } from "../hooks/quizState";
@@ -12,6 +20,8 @@ import { useQuiz } from "../hooks/useQuiz";
 import axios from "axios";
 import { QuizInfo } from "../types/api/quizinfo";
 import { useTable } from "../hooks/useTable";
+import { CorrectModal } from "../organisms/CorrectModal";
+import { useSelectQuiz } from "../hooks/useSelectQuiz";
 
 type Props = {
   isFilter: boolean;
@@ -25,11 +35,6 @@ export const QuestionBox = (props: Props) => {
 
   console.log("SUBJECT=" + subject);
 
-  // const { ncycle, setCycle } = useCycleNum();
-  // const [ncycle, setCycle] = useState(0);
-  // const [nAns, setNans] = useState(0);
-  // const [nCorrTotal, setNcorrTotal] = useState(0);
-
   const {
     ncycle,
     ntrial_total,
@@ -38,6 +43,11 @@ export const QuestionBox = (props: Props) => {
     setNtrialTotal,
     setNcorrTotal,
   } = useTable();
+
+  // Modalを利用するための手順
+  let { isOpen, onOpen, onClose } = useDisclosure();
+  // Modalを利用するために作ったカスタムフック
+  const { selectedQuiz, onSelectQuiz } = useSelectQuiz();
 
   // 各回答についてはQuestionBoxで寿命があるので良いかと
   const [userAnswer, setUserAnswer] = useState("");
@@ -189,7 +199,9 @@ export const QuestionBox = (props: Props) => {
   };
 
   const onClickCorrect = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log(e.target.value);
+    const id = e.currentTarget.value;
+    onSelectQuiz({ id, quizArray, onOpen });
+    console.log(e.currentTarget.value);
   };
 
   return (
@@ -241,8 +253,6 @@ export const QuestionBox = (props: Props) => {
             </Flex>
             <Flex>
               <Button
-                // id={currQ._id}
-                // value={currQ._id}
                 value={currQ._id}
                 onClick={onClickCorrect}
                 colorScheme={"blue"}
@@ -253,6 +263,12 @@ export const QuestionBox = (props: Props) => {
                 Correct this quiz.
               </Button>
             </Flex>
+            <CorrectModal
+              isOpen={isOpen}
+              onClose={onClose}
+              isAdmin={false}
+              quiz={selectedQuiz}
+            />
           </Stack>
         </Box>
       </Flex>

@@ -15,6 +15,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { QuizInfo } from "../types/api/quizinfo";
+import { useQuiz } from "../hooks/useQuiz";
 
 // Propsを定義するために必要なインポート
 // import { User } from "../../types/api/user";
@@ -41,6 +42,9 @@ export const CorrectModal: VFC<Props> = memo((props) => {
     console.log(quiz.answer);
   }
 
+  //   クイズを更新するために関連カスタムフックを持ってくる
+  const { patchQuiz } = useQuiz();
+
   // 情報を更新するための方法
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -52,7 +56,13 @@ export const CorrectModal: VFC<Props> = memo((props) => {
     setAnswer(quiz?.answer ?? "");
   }, [quiz]);
 
-  const onClickUpdate = () => alert("更新されました！");
+  const onClickUpdate = () => {
+    if (quiz !== null) {
+      const newquiz = { ...quiz, question: question, answer: answer };
+      console.log(quiz._id);
+      patchQuiz({ subject: "english", id: newquiz._id, newQuiz: newquiz });
+    }
+  };
 
   // 更新する関数：Modalの中のインプットテキストのところに onChange で仕込んでいる関数群
   const onChangeQuiz = (e: ChangeEvent<HTMLInputElement>) =>
@@ -101,11 +111,9 @@ export const CorrectModal: VFC<Props> = memo((props) => {
               </FormControl>
             </Stack>
           </ModalBody>
-          {isAdmin && (
-            <ModalFooter>
-              <Button onClick={onClickUpdate}> UNKO </Button>
-            </ModalFooter>
-          )}
+          <ModalFooter>
+            <Button onClick={onClickUpdate}> 内容を修正 </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </div>

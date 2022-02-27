@@ -30,14 +30,15 @@ export const useQuiz = () => {
   const [qNum, setQnum] = useState<number>(0);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
 
+  const server_url = process.env.REACT_APP_SERVER_URL;
+  const server_port = process.env.REACT_APP_SERVER_PORT;
+
   const patchQuiz = (props2: Props2) => {
     console.log("patchQuiz was called.");
 
     setIsCorrect(true);
     let { subject, id, newQuiz } = props2;
-    // let quiz_url = `http://192.168.99.123:9201/${category}/${quiz_id}`;
-    // let quiz_url = `http://192.168.99.123:9201/${category}/${quiz_id}`;
-    let quiz_url = `http://10.10.122.179:9201/${subject}/${id}`;
+    let quiz_url = `http://${server_url}:${server_port}/${subject}/${id}`;
     axios
       .patch<Array<QuizInfo>>(quiz_url, newQuiz, {
         headers: {
@@ -87,11 +88,10 @@ export const useQuiz = () => {
     const { start_page, end_page, subject, category } = props;
     const { showMessage } = useMessage();
 
+
     useEffect(() => {
       axios
-        //  .get<Array<QuizInfo>>("http://localhost:9201/english", {
-        // .get<Array<QuizInfo>>("http://192.168.99.123:9201/english", {
-        .get<Array<QuizInfo>>(`http://10.10.122.179:9201/${subject}`, {
+        .get<Array<QuizInfo>>(`http://${server_url}:${server_port}/${subject}`, {
           headers: {
             "Access-Control-Allow-Origin": "*",
           },

@@ -36,7 +36,7 @@ export const ScoreTable: VFC = memo(() => {
   }
   return (
     <>
-      <Table size="md" variant="striped" colorScheme="blue">
+      <Table size="md" colorScheme="blue">
         <TableCaption>現状のまとめ</TableCaption>
         <Thead>
           <Tr>

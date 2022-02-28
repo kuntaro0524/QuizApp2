@@ -226,8 +226,8 @@ export const QuestionBox = (props: Props) => {
                 </MyButton>
               </Box>
             </Flex>
-            <Flex>
-              <Box w={500} m={1}>
+            <Flex m={1}>
+              <Box w={500} m={5}>
                 {displayJudgeImage({ isCorrect, isAnswered })}
               </Box>
               <Box>

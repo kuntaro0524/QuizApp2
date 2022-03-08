@@ -1,4 +1,12 @@
-import { VStack } from "@chakra-ui/react";
+import {
+  Center,
+  Flex,
+  grid,
+  Grid,
+  GridItem,
+  SimpleGrid,
+  VStack,
+} from "@chakra-ui/react";
 import { VFC } from "react";
 import { Link } from "react-router-dom";
 
@@ -9,6 +17,10 @@ type Props = {
 const pages = [
   {
     user: "kuntaro",
+    quizes: [{ title: "教科書問題", link: "/english" }],
+  },
+  {
+    user: "ibuki",
     quizes: [
       { title: "教科書問題", link: "/english" },
       { title: "パパ問題１", link: "/english_papa" },
@@ -27,20 +39,24 @@ export const SelectQuizPages: VFC<Props> = (props) => {
   console.log(quizlist);
 
   return (
-    <VStack
-      as="nav"
-      align="center"
-      justify="space-between"
-      wrap="wrap"
-      padding={6}
-      bg="teal.500"
-      color="white"
-    >
+    <Grid templateColumns="repeat(6,1fr)" gap={1} bg="white" color="white">
       {quizlist.map((quizpage, index) => (
-        <Link key={index} to={quizpage.link}>
-          {quizpage.title}
-        </Link>
+        <GridItem
+          key={index}
+          h="100"
+          w="100%"
+          colSpan={1}
+          color="white"
+          bg="teal"
+          borderRadius={35}
+        >
+          <Link key={index} to={quizpage.link}>
+            <Center h="full" textStyle="bold">
+              {quizpage.title}
+            </Center>
+          </Link>
+        </GridItem>
       ))}
-    </VStack>
+    </Grid>
   );
 };

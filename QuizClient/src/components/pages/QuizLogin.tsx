@@ -1,7 +1,16 @@
 import { ChangeEvent, MouseEventHandler, useContext, useState } from "react";
 import { MyInput } from "../atoms/MyInput";
 import { MyButton } from "../atoms/MyButton";
-import { Box, Button, Center, Container, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Container,
+  Grid,
+  GridItem,
+  Heading,
+  Stack,
+} from "@chakra-ui/react";
 import { useUser } from "../hooks/useUser";
 import { useMessage } from "../hooks/useMessage";
 import { PasswordInput } from "../atoms/PasswordInput";
@@ -60,21 +69,39 @@ export const QuizLogin = () => {
     <>
       <Container>
         <Box alignContent="center">
-          <Heading bg="teal" color="black">
-            ログインしましょう
+          <Heading bg="teal" color="white" borderRadius={35}>
+            <Center>ログインしましょう</Center>
           </Heading>
-          <MyInput
-            placeholder="Input your rname"
-            value={name}
-            onChange={onChangeName}
-          />
-          <PasswordInput
-            placeholder="Input your password"
-            value={name}
-            onChange={onChangePass}
-          />
+          <Grid templateColumns="repeat(2,1fr)" m={1}>
+            <GridItem w="100px">
+              <Center>
+                <p> User name </p>
+              </Center>
+            </GridItem>
+            <GridItem w="300px">
+              <MyInput
+                placeholder="Input your rname"
+                value={name}
+                onChange={onChangeName}
+              />
+            </GridItem>
+          </Grid>
+          <Grid templateColumns="repeat(2,1fr)" m={1}>
+            <GridItem w="100px">
+              <Center>
+                <p> Password </p>
+              </Center>
+            </GridItem>
+            <GridItem w="300px">
+              <PasswordInput
+                placeholder="Input your password"
+                value={name}
+                onChange={onChangePass}
+              />
+            </GridItem>
+          </Grid>
           <MyButton colorScheme="teal" onClick={onClickOK}>
-            Common
+            Confirm
           </MyButton>
         </Box>
       </Container>

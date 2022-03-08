@@ -19,7 +19,7 @@ export const UserPage = () => {
         bg="tomato"
         color="white"
       >
-        {selectedUser.name}さんが選択できるページ
+        {selectedUser.name}さんが選択できるクイズ
       </Center>
       <SelectQuizPages username={selectedUser.name} />
     </>

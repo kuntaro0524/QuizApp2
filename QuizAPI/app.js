@@ -42,6 +42,24 @@ const quiz_schema = {
   corr_ratio: Number,
 };
 
+// ログイン用の情報を別のcollectionで保持する
+const user_schema = {
+  name: String,
+  password: String,
+};
+
+app.get("/user", function (req, res) {
+  try {
+    userSchema = mongoose.model("user", user_schema, "user");
+  } catch (e) {
+    userSchema = mongoose.model("user");
+  }
+  userSchema.find(function (err, foundItems) {
+    console.log(foundItems);
+    res.send(foundItems);
+  });
+});
+
 /* definitions of data record on the database: 'ibukiquiz'*/
 // const QuizInfo = mongoose.model("pppp", quiz_schema, "shakai");
 // const EngInfo = mongoose.model("qqqq", quiz_schema, "english");

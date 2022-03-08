@@ -10,6 +10,7 @@ import { NcorrProvider } from "./components/providers/NumCorrProvider";
 import { NtrialProvider } from "./components/providers/NumTrialProvider";
 import { AllQuizProvider } from "./components/providers/QuizProvider";
 import { MyButton } from "./components/atoms/MyButton";
+import { QuizLogin } from "./components/pages/QuizLogin";
 
 function App() {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ function App() {
                 <Link to="/english"> 教科書のやつ </Link>
                 <Link to="/english_papa"> パパ問題集 </Link>
                 <Link to="/english_work"> ワークのやつ </Link>
+                <Link to="/login"> Login page </Link>
                 {/* <MyButton onClick={onClickUnko} colorScheme="yellow"> */}
                 {/* UNKO */}
                 {/* </MyButton> */}
@@ -63,7 +65,7 @@ function App() {
                     <QuizSelection subject={"english"} category={"work"} />
                   }
                 />
-                {/* <Route path="/quiz" element={<QuizLayout />} /> */}
+                <Route path="/login" element={<QuizLogin />} />
               </Routes>
               {/* <QuizLayout /> */}
             </NtrialProvider>

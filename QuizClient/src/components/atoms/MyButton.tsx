@@ -1,10 +1,10 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import { ReactNode, VFC } from "react";
 import { Button } from "@chakra-ui/react";
 
 type Props = {
   children: ReactNode;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   colorScheme: string;
   isDisabled?: boolean;
 };

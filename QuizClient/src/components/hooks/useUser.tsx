@@ -3,13 +3,8 @@ import axios from "axios";
 import { useCallback, useContext, useEffect, useState, VFC } from "react";
 import { DiagnosticCategory } from "typescript";
 import { AllQuizContext } from "../providers/QuizProvider";
+import { UserInfo } from "../types/api/userinfo";
 import { useMessage } from "./useMessage";
-
-type User = {
-  _id: string;
-  name: string;
-  pass: string;
-};
 
 type Props = {
   subject: string;
@@ -19,11 +14,11 @@ type Props = {
 };
 
 type Props2 = {
-  newUser: User;
+  newUser: UserInfo;
 };
 
 export const useUser = () => {
-  const [userArray, setUserArray] = useState([
+  const [userArray, setUserArray] = useState<Array<UserInfo>>([
     { _id: "TTTTT", name: "dummy", pass: "dummy" },
   ]);
 
@@ -38,7 +33,7 @@ export const useUser = () => {
     let user_url = `http://${server_url}:${server_port}/user`;
 
     axios
-      .patch<Array<User>>(user_url, newUser, {
+      .patch<Array<UserInfo>>(user_url, newUser, {
         headers: {
           "Access-Control-Allow-Origin": "*",
         },
@@ -88,7 +83,7 @@ export const useUser = () => {
 
     useEffect(() => {
       axios
-        .get<Array<User>>(user_url, {
+        .get<Array<UserInfo>>(user_url, {
           headers: {
             "Access-Control-Allow-Origin": "*",
           },

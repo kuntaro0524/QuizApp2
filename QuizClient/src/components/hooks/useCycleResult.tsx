@@ -18,14 +18,13 @@ export const useCycleResult = () => {
 
   type Props = { username: string; subject: string; category: string };
 
-  const pushResult = (props: Props) => {
+  const useResult = (props: Props) => {
     const { subject, category } = props;
-    const { showMessage } = useMessage();
 
     useEffect(() => {
       axios
         .put<Array<ResultInfo>>(
-          `http://${server_url}:${server_port}/results/${subject}`,
+          `http://${server_url}:${server_port}/results/${subject}`, resultArray,
           {
             headers: {
               "Access-Control-Allow-Origin": "*",
@@ -58,5 +57,5 @@ export const useCycleResult = () => {
     }, []);
   };
 
-  return { resultArray, setResultArray, pushResult };
+  return { resultArray, setResultArray, useResult };
 };

@@ -26,6 +26,7 @@ import { CorrectModal } from "../organisms/CorrectModal";
 import { useSelectQuiz } from "../hooks/useSelectQuiz";
 import { useMessage } from "../hooks/useMessage";
 import { useMyImage } from "../hooks/useImage";
+import { useCycleResult } from "../hooks/useCycleResult";
 
 type Props = {
   isFilter: boolean;
@@ -35,6 +36,7 @@ type Props = {
 
 export const QuestionBox = (props: Props) => {
   const { quizArray, setQuizArray, updateDB } = useQuiz();
+  const {resultArray, setResultArray, useResult} = useCycleResult();
   const { isFilter, filter_ratio, subject } = props;
 
   const { showMessage } = useMessage();
@@ -86,7 +88,7 @@ export const QuestionBox = (props: Props) => {
   };
 
   const onClickEnd = () => {
-    updateDB({ subject: subject });
+    useResult({username:"kuntaro", subject: subject, category: "test"})
   };
 
   const filterQuizes = (corr_threshold: number) => {
@@ -233,7 +235,6 @@ export const QuestionBox = (props: Props) => {
                   Next question.
                 </MyButton>
                 <MyButton
-                  isDisabled={true}
                   onClick={onClickEnd}
                   colorScheme="red"
                 >

@@ -8,13 +8,12 @@ import { useMessage } from "./useMessage";
 
 // useContextを利用していることをカプセル化するためのクラス（らしい）
 
-// import { NtrialContext, NtrialContextType } from "../providers/QuizProvider";
-
 type Props = {
   subject: string;
   start_page: number;
   end_page: number;
   category: string;
+  isCat: boolean /* カテゴリを設定するかどうか */;
 };
 
 type Props2 = {
@@ -85,36 +84,43 @@ export const useQuiz = () => {
   };
 
   const useDBs = (props: Props) => {
-    const { start_page, end_page, subject, category } = props;
+    const { start_page, end_page, subject, category, isCat } = props;
     const { showMessage } = useMessage();
-
 
     useEffect(() => {
       axios
-        .get<Array<QuizInfo>>(`http://${server_url}:${server_port}/${subject}`, {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-          },
-        })
+        .get<Array<QuizInfo>>(
+          `http://${server_url}:${server_port}/${subject}`,
+          {
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+            },
+          }
+        )
         .then((res) => {
           console.log("<<<< BEFORE >>>>>");
           console.log(res.data);
-
-          const filtered_quiz = res.data.filter(
-            (quiz) =>
-              quiz.page >= start_page &&
-              quiz.page <= end_page &&
-              quiz.category === category
-          );
-          console.log("<<<< AFTER >>>>>" + filtered_quiz.length);
-          if (filtered_quiz.length === 0) {
-            showMessage({
-              title: "フィルター後のクイズがないよ",
-              status: "error",
-            });
+          if (isCat) {
+            const filtered_quiz = res.data.filter(
+              (quiz) =>
+                quiz.page >= start_page &&
+                quiz.page <= end_page &&
+                quiz.category === category
+            );
+            console.log("<<<< AFTER >>>>>" + filtered_quiz.length);
+            if (filtered_quiz.length === 0) {
+              showMessage({
+                title: "フィルター後のクイズがないよ",
+                status: "error",
+              });
+            }
+            setQuizArray(filtered_quiz);
+            setQnum(filtered_quiz.length);
+          } else {
+            setQuizArray(res.data);
+            setQnum(res.data.length);
           }
-          setQuizArray(filtered_quiz);
-          setQnum(filtered_quiz.length);
+
           setIsRead(true);
           console.log(quizArray);
         })

@@ -1,0 +1,53 @@
+question,answer,category,Detail,made_date,page
+多重共線性を評価するために利用できるモジュールは？,statsmodels.stats.outliers_influence ,statistics,statsmodel,2022/2/1,0
+多重共線性がないと言われているVIFの数値は？,1,statistics,statsmodel,2022/2/1,0
+VIFは何の略？,Variance Inflation Factor,statistics,statsmodel,2022/2/1,0
+ダミー変数を作成するには？,"pd.get_dummies(data, drop_first=True)",statistics,pandas,2022/2/1,0
+多重共線性を評価するため手順は？,"データフレームからカラムを指定してvariableを配列で取り出して、vif['VIF']=[variance_inflation_factor(variables.values, i) for i in range(variables.shape[1])]",statistics,statsmodel,2022/2/1,0
+pandasでデータフレームのカラムを配列として取り出す方法,df.columns.values,statistics,pandas,2022/2/1,0
+pandasのデータフレームのカラムの並び替えをする方法は？,カラム名をリストで作成しておいて、df[columns] とかやればその順に並ぶらしい,statistics,pandas,2022/2/1,0
+空白で区切られた列でできているテキストからpandas dataframeを作成する,"pd.read_csv(""hoge.csv"", delim_whitespace=True)",python,pandas,2022/2/1,0
+pandasでCSVを読むときにカラムの名前を入れてしまう,"pd.read_csv(""hoge.csv"", delim_whitespace=True, names=['time', 'temp'])",python,pandas,2022/2/1,0
+pandasのデータをそのままプロットしたいとき(scatter_,"df.plot(x='sepal_length', y='sepal_width')",python ,pandas,2022/2/1,0
+pandasのデータからヒストグラムをプロットしたいとき,df.hist() で全部のパラメータについて一気にプロットが描ける,python,pandas,2022/2/1,0
+pandasのデータフレームからそのままヒストグラムを描く（パラメータ指定）,df['Age'].hist(bins=20),python,pandas,2022/2/1,0
+線形回帰のときによく使いそう：dataframeから１列除いて新しいdataframeへ,"inputs = data_preprocessed.drop(['log_price'], axis=1)",statistics,pandas,2022/2/1,0
+データをスケール合わせする（平均値を０、標準偏差を１にする）モジュール,from sklearn.preprocessing import StandardScaler,statistics,sklearn,2022/2/1,0
+実際にスケール合わせをする方法（dataframeに対して）,scaler = StandardScaler() → scaler.fit(input_dataframe),statistics,sklearn,2022/2/1,0
+機械学習用にデータをスプリットする,"from sklearn.model_selection import train_test_split → x_train, x_test, y_train, y_test = train_test_split(inputs_scaled, targets, test_size=0.2, random_state = 365)",statistics,sklearn,2022/2/1,0
+回帰モデルを作成する手順,"reg = LinearRegression() → reg.fit(x_train, y_train)",statistics,sklearn,2022/2/1,0
+seabornを利用して実測値と予測値の差分の分布をプロットする,sns.distplot(y_train - y_hat),statistics,sklearn,2022/2/1,0
+sklearnの回帰モデルの決定係数を計算する,"reg.score(x_train, y_train)",statistics,sklearn,2022/2/1,0
+matplotlib で　凡例を表示する(plt）,plt.legend(),python ,matplotlib,2022/2/2,0
+xやyの範囲を指定する,"plt.xlim(0,100) など",python ,matplotlib,2022/2/2,0
+"data['Admitted'] という合格の是非(Yes, No)を(1,0)に変換する（Pandas)","data['Admitted'] = data['Admitted'].map({'yes':1, 'No': 0})",python ,pandas,2022/2/4,0
+Statsmodelを利用した線形回帰の直線フィットとY_hat の求めかたは？,"x = sm.add_constant(x1)
+reg_lin = sm.OLS(y,x)
+results_lin = reg_lin.fit()
+
+plt.scatter(x1,y,color = 'C0')
+y_hat = x1*results_lin.params[1]+results_lin.params[0]",python ,statsmodel,2022/2/4,0
+Datetimeを足し算する（今に１日足すとか）,dt2 = datetime.datetime(now) + datetime.timedelta(days=1),python ,datetime,2022/2/9,0
+deep copyする,dc = copy.deepcopy(copy_origin),python,copy,2022/2/10,0
+pandasでpython dictをDataFrameにする,df = pd.DataFrame(dict_list),python ,pandas ,2022/2/10,0
+pandasでDataFrameの列順を変更する,"{'a': 1, 'b': 2, 'c': 3} みたいなやつは df = df[['c', 'b', 'a']] とすればその順に並ぶ",python ,pandas ,2022/2/10,0
+pandasでCSVを書き出すときに index(行番号をなくす）,"df.to_csv(""out.csv"", index=False)",python ,pandas ,2022/2/10,0
+objectの内容をコピーして一部だけ編集したい場合,"  const rect = { type: ""rectanble"", width: 100, height: 200 };
+  const new_rect = { ...rect, height: 350, width: 125 };",Javascript,object,2022/2/15,0
+Javascriptのreduce関数を説明せよ,各要素を左から右に処理して単一の値を生成する,Javascript,function,2022/2/15,0
+Javascriptのreduce関数で足し算をしてみろ,"const priceList = [100, 500, 900];
+const sum = priceList.reduce((previous, current) => {
+ return previous + current;
+});",Javascript,function,2022/2/15,0
+Javascriptのアロー関数での記述をしてみよう,"const square = (num) => {
+  return num ** 2;
+};",Javascript,function,2022/2/15,0
+Javascriptのアロー関数で引数が一つしかない場合の記述をしてみろ,"const square = num => {
+  return num ** 2;
+};",Javascript,function,2022/2/15,0
+Javascriptのアロー関数でreturnが省略できるやつをかけ,const square = num => num ** 2;,Javascript,function,2022/2/15,0
+pythonで文字列をdatetimeオブジェクトに変換する方法,"from datetime import datetime as dt
+tstr = '2012-12-29 13:49:37'
+tdatetime = dt.strptime(tstr, '%Y-%m-%d %H:%M:%S')",Python,datetime,2022/2/15,0
+Linuxのバイナリプログラムが参照しているライブラリを調べるコマンド,ldd program_name(absolute path),Linux,command,2022/03/01,0
+Linuxの有効なライブラリを調査するコマンド,ldconfig -p | grep 必要なプログラム名,Linux,command,2022/03/01,0

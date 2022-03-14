@@ -60,6 +60,43 @@ app.get("/user", function (req, res) {
   });
 });
 
+// 結果を格納するためのDBモデルや設定
+// ログイン用の情報を別のcollectionで保持する
+const result_schema = {
+  q_id: String,
+  isCorrect: Boolean,
+  datetime: Date,
+  ntrial: Number,
+  ncorr: Number,
+  corr_ratio: Number,
+};
+
+app.post("/results/:subject", function (req, res) {
+  // 科目を取得
+  const subject = req.params.subject;
+  // 結果を格納するcollectionを作成（存在していれば追加？)
+  const submit_target = `${subject}_results`;
+  const results = req.body;
+  console.log(submit_target);
+
+  try {
+    resultSchema = mongoose.model(submit_target, result_schema, submit_target);
+  } catch (e) {
+    resultSchema = mongoose.model(submit_target);
+  }
+
+  /* post されたデータを新たにDBへ登録する */
+  const newPost = new resultSchema(results);
+
+  newPost.save(function (err) {
+    if (!err) {
+      res.send("Successfully added a new condition");
+    } else {
+      res.send(err);
+    }
+  });
+});
+
 /* definitions of data record on the database: 'ibukiquiz'*/
 // const QuizInfo = mongoose.model("pppp", quiz_schema, "shakai");
 // const EngInfo = mongoose.model("qqqq", quiz_schema, "english");
@@ -111,7 +148,7 @@ app.post("/quiz", function (req, res) {
     if (!err) {
       res.send("Successfully added a new condition");
     } else {
-      res.send(err);
+      ruser_schemaes.send(err);
     }
   });
 });

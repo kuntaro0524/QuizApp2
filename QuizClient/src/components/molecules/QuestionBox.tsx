@@ -148,6 +148,21 @@ export const QuestionBox = (props: Props) => {
     setQuizArray(copy_quizes);
     console.log("新しい配列としてセットします");
 
+    // 現時点のクイズのID
+    const quizid = currQ._id;
+    const dtime = new Date();
+
+    const aresult = {
+      q_id: quizid,
+      isCorrect: isCorrect,
+      datetime: dtime,
+      ntrial: new_ntry,
+      ncorr: new_ncorr,
+      corr_ratio: tmp_corr_ratio,
+    };
+
+    console.log(aresult);
+
     // クイズのインデックスをインクリメント
     let nextIndex = qindex + 1;
     console.log(`クイズサイズ ${quizArray.length} 次 ${nextIndex}`);

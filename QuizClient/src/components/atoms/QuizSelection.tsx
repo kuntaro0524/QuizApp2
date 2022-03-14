@@ -6,10 +6,11 @@ import { QuizLayout } from "../pages/QuizLayout";
 type Props = {
   subject: string;
   category: string;
+  isCat: boolean;
 };
 
 export const QuizSelection = (props: Props) => {
-  const { subject, category } = props;
+  const { subject, category, isCat } = props;
 
   console.log(subject, category);
 
@@ -20,6 +21,7 @@ export const QuizSelection = (props: Props) => {
         category={category}
         start_page={1}
         end_page={10000}
+        isCat={isCat}
       />
     </>
   );

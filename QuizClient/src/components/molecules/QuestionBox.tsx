@@ -11,9 +11,6 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { MyButton } from "../atoms/MyButton";
-// import { useRecoilState, useRecoilValue } from "recoil";
-// import { answerState, quizState, readState } from "../hooks/quizState";
-
 import { AnswerBox } from "../atoms/AnswerBox";
 import { useCycleNum } from "../hooks/useCycleNum";
 import { useNtry } from "../hooks/useNtrial";
@@ -36,7 +33,7 @@ type Props = {
 
 export const QuestionBox = (props: Props) => {
   const { quizArray, setQuizArray, updateDB } = useQuiz();
-  const {resultArray, setResultArray, useResult} = useCycleResult();
+  const { resultArray, setResultArray, useResult } = useCycleResult();
   const { isFilter, filter_ratio, subject } = props;
 
   const { showMessage } = useMessage();
@@ -87,8 +84,8 @@ export const QuestionBox = (props: Props) => {
     setIsAnswered(true);
   };
 
-  const onClickEnd = () => {
-    useResult({username:"kuntaro", subject: subject, category: "test"})
+  const useClickEnd = () => {
+    useResult({ username: "kuntaro", subject: subject, category: "test" });
   };
 
   const filterQuizes = (corr_threshold: number) => {
@@ -163,7 +160,7 @@ export const QuestionBox = (props: Props) => {
       corr_ratio: tmp_corr_ratio,
     };
 
-    console.log(aresult);
+    setResultArray([...resultArray, aresult]);
 
     // クイズのインデックスをインクリメント
     let nextIndex = qindex + 1;
@@ -234,10 +231,7 @@ export const QuestionBox = (props: Props) => {
                 <MyButton onClick={onClickNextQuestion} colorScheme="blue">
                   Next question.
                 </MyButton>
-                <MyButton
-                  onClick={onClickEnd}
-                  colorScheme="red"
-                >
+                <MyButton onClick={useClickEnd} colorScheme="red">
                   Finish this quiz.
                 </MyButton>
               </Box>

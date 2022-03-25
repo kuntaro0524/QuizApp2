@@ -30,6 +30,7 @@ var cors = require("cors");
 app.use(cors());
 
 let quizSchema = null;
+let resultSchema = null;
 
 const quiz_schema = {
   question: String,
@@ -77,6 +78,8 @@ app.post("/results/:subject", function (req, res) {
   // 結果を格納するcollectionを作成（存在していれば追加？)
   const submit_target = `${subject}_results`;
   const results = req.body;
+  console.log("Results=");
+  console.log(results);
   console.log(submit_target);
 
   try {
@@ -85,16 +88,9 @@ app.post("/results/:subject", function (req, res) {
     resultSchema = mongoose.model(submit_target);
   }
 
-  /* post されたデータを新たにDBへ登録する */
-  const newPost = new resultSchema(results);
-
-  newPost.save(function (err) {
-    if (!err) {
-      res.send("Successfully added a new condition");
-    } else {
-      res.send(err);
-    }
-  });
+  // 受け取っているのはJSONの配列なので insertMany を使う
+  // これが実行されたら、前のcollectionはなくなるのですでに存在している場合にはPUTを使うなどしたほうが良さそうだが。
+  resultSchema.insertMany(results);
 });
 
 /* definitions of data record on the database: 'ibukiquiz'*/

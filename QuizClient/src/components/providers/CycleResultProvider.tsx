@@ -28,15 +28,15 @@ export const CycleResultProvider = (props: { children: ReactNode }) => {
   // 再レンダリングする規模によっては変数と関数は別にしたほうが良い場合もある
   const dt = new Date();
   const [resultArray, setResultArray] = useState<Array<ResultInfo>>([
-    {
-      _id: "3",
-      q_id: "This is it?",
-      isCorrect: false,
-      datetime: dt,
-      ntrial: 10,
-      ncorr: 5,
-      corr_ratio: 0.5,
-    },
+    // {
+    //   _id: "3",
+    //   q_id: "This is it?",
+    //   isCorrect: false,
+    //   datetime: dt,
+    //   ntrial: 10,
+    //   ncorr: 5,
+    //   corr_ratio: 0.5,
+    // },
   ]);
   return (
     <CycleResultContext.Provider value={{ resultArray, setResultArray }}>

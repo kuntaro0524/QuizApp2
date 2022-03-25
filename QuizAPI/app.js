@@ -64,9 +64,11 @@ app.get("/user", function (req, res) {
 // 結果を格納するためのDBモデルや設定
 // ログイン用の情報を別のcollectionで保持する
 const result_schema = {
+  user: String,
+  subject: String,
   q_id: String,
   isCorrect: Boolean,
-  datetime: Date,
+  datetime: Number,
   ntrial: Number,
   ncorr: Number,
   corr_ratio: Number,
@@ -106,6 +108,23 @@ app.post("/results/:subject", function (req, res) {
 
 app.get("/quiz", function (req, res) {
   QuizInfo.find(function (err, foundItems) {
+    res.send(foundItems);
+  });
+});
+
+// 教科を指定してResultsをとってくるやつ
+app.get("/results/:subject", function (req, res) {
+  // 科目を取得
+  const subject = req.params.subject;
+  // 結果を格納するcollectionを作成（存在していれば追加？)
+  const submit_target = `${subject}_results`;
+
+  try {
+    resultSchema = mongoose.model(submit_target, result_schema, submit_target);
+  } catch (e) {
+    resultSchema = mongoose.model(submit_target);
+  }
+  resultSchema.find(function (err, foundItems) {
     res.send(foundItems);
   });
 });

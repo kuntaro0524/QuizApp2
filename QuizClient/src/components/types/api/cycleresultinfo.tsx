@@ -1,8 +1,10 @@
 export type ResultInfo = {
+  user: string;
+  subject: string;
   _id?: string;
   q_id: string;
   isCorrect: boolean;
-  datetime: Date;
+  datetime: number;
   ntrial: number;
   ncorr: number;
   corr_ratio: number;

@@ -12,6 +12,7 @@ type Props2 = {};
 
 export const useCycleResult = () => {
   const { resultArray, setResultArray } = useContext(CycleResultContext);
+  const [dbResultArray, setDBresultArray] = useState<Array<ResultInfo>>([]);
 
   const server_url = process.env.REACT_APP_SERVER_URL;
   const server_port = process.env.REACT_APP_SERVER_PORT;
@@ -56,5 +57,40 @@ export const useCycleResult = () => {
       });
   };
 
-  return { resultArray, setResultArray, useResult };
+  const getResult = (props: Props) => {
+    const { subject } = props;
+    axios
+      .get<Array<ResultInfo>>(
+        `http://${server_url}:${server_port}/results/${subject}`,
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      )
+      .then((res) => {
+        setDBresultArray(res.data);
+      })
+      .catch(function (error) {
+        console.log("ERROR?");
+        console.log(error.config);
+        console.log(error);
+        for (let key of Object.keys(error)) {
+          console.log(key);
+          console.log(error[key]);
+        }
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      });
+  };
+
+  return { resultArray, setResultArray, useResult, getResult, dbResultArray };
 };

@@ -17,6 +17,8 @@ import {
   CycleResultContext,
   CycleResultProvider,
 } from "./components/providers/CycleResultProvider";
+import { AllResultsContext } from "./components/providers/ResultsProvider";
+import { Results } from "./components/atoms/Results";
 
 function App() {
   const navigate = useNavigate();
@@ -77,6 +79,8 @@ function App() {
                         />
                       }
                     />
+                    {/* クエリパラメータを有効にしてみる */}
+                    <Route path="/results" element={<Results />} />
                     <Route path="/login" element={<QuizLogin />} />
                     <Route path="/selection" element={<UserPage />} />
                   </Routes>

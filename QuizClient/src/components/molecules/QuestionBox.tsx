@@ -25,6 +25,7 @@ import { useMessage } from "../hooks/useMessage";
 import { useMyImage } from "../hooks/useImage";
 import { useCycleResult } from "../hooks/useCycleResult";
 import { useUser } from "../hooks/useUser";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   isFilter: boolean;
@@ -40,6 +41,7 @@ export const QuestionBox = (props: Props) => {
   const { showMessage } = useMessage();
 
   console.log("SUBJECT=" + subject);
+  const navigate = useNavigate();
 
   const {
     ncycle,
@@ -94,6 +96,8 @@ export const QuestionBox = (props: Props) => {
       subject: subject,
       category: "test",
     });
+
+    navigate(`/results?username=${selectedUser.name}&subject=${subject}`);
   };
 
   const filterQuizes = (corr_threshold: number) => {
@@ -157,9 +161,13 @@ export const QuestionBox = (props: Props) => {
 
     // 現時点のクイズのID
     const quizid = currQ._id;
-    const dtime = new Date();
+    // データベースで見て計算しやすいようにunix timeで格納する
+    const dtime = new Date().getTime() / 1000.0;
 
+    // このクイズの結果を結果DBへ登録するために結果配列へ格納
     const aresult = {
+      user: selectedUser.name,
+      subject: subject,
       q_id: quizid,
       isCorrect: isCorrect,
       datetime: dtime,

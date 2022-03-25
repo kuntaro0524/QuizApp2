@@ -1,7 +1,8 @@
-import Datetime from 'react-datetime'  
+import Datetime from "react-datetime";
 type QuizResults = {
-  _id: string;
+  user: string;
   subject: string;
+  _id: string;
   category: string;
-  datetime: Date
-}
+  datetime: Date;
+};

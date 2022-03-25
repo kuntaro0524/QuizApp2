@@ -3,6 +3,7 @@ import axios from "axios";
 import { useCallback, useContext, useEffect, useState, VFC } from "react";
 import { DiagnosticCategory } from "typescript";
 import { AllQuizContext } from "../providers/QuizProvider";
+import { SelUserContext } from "../providers/UserProvider";
 import { UserInfo } from "../types/api/userinfo";
 import { useMessage } from "./useMessage";
 
@@ -21,6 +22,8 @@ export const useUser = () => {
   const [userArray, setUserArray] = useState<Array<UserInfo>>([
     { _id: "TTTTT", name: "dummy", pass: "dummy" },
   ]);
+
+  const { selectedUser, setSelectedUser } = useContext(SelUserContext);
 
   const server_url = process.env.REACT_APP_SERVER_URL;
   const server_port = process.env.REACT_APP_SERVER_PORT;
@@ -115,6 +118,7 @@ export const useUser = () => {
   };
 
   return {
+    selectedUser,
     userArray,
     useUsers,
     setUserArray,

@@ -24,6 +24,7 @@ import { useSelectQuiz } from "../hooks/useSelectQuiz";
 import { useMessage } from "../hooks/useMessage";
 import { useMyImage } from "../hooks/useImage";
 import { useCycleResult } from "../hooks/useCycleResult";
+import { useUser } from "../hooks/useUser";
 
 type Props = {
   isFilter: boolean;
@@ -35,7 +36,7 @@ export const QuestionBox = (props: Props) => {
   const { quizArray, setQuizArray, updateDB } = useQuiz();
   const { resultArray, setResultArray, useResult } = useCycleResult();
   const { isFilter, filter_ratio, subject } = props;
-
+  const { selectedUser } = useUser();
   const { showMessage } = useMessage();
 
   console.log("SUBJECT=" + subject);
@@ -85,9 +86,14 @@ export const QuestionBox = (props: Props) => {
   };
 
   const useClickEnd = () => {
-    console.log("Ending Button clicked");
+    console.log("PUSSSSSSSSSSSSSSSSS");
+    console.log(selectedUser.name);
 
-    useResult({ username: "kuntaro", subject: subject, category: "test" });
+    useResult({
+      username: selectedUser.name,
+      subject: subject,
+      category: "test",
+    });
   };
 
   const filterQuizes = (corr_threshold: number) => {

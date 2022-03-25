@@ -19,7 +19,8 @@ export const useCycleResult = () => {
   type Props = { username: string; subject: string; category: string };
 
   const useResult = (props: Props) => {
-    const { subject, category } = props;
+    const { username, subject, category } = props;
+    console.log(username);
 
     axios
       .post<Array<ResultInfo>>(
@@ -32,7 +33,6 @@ export const useCycleResult = () => {
         }
       )
       .then((res) => {
-        console.log("Success?");
         console.log(res.data);
       })
       .catch(function (error) {

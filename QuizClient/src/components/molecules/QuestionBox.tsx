@@ -85,6 +85,8 @@ export const QuestionBox = (props: Props) => {
   };
 
   const useClickEnd = () => {
+    console.log("Ending Button clicked");
+
     useResult({ username: "kuntaro", subject: subject, category: "test" });
   };
 

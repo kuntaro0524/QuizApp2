@@ -90,7 +90,13 @@ app.post("/results/:subject", function (req, res) {
 
   // 受け取っているのはJSONの配列なので insertMany を使う
   // これが実行されたら、前のcollectionはなくなるのですでに存在している場合にはPUTを使うなどしたほうが良さそうだが。
-  resultSchema.insertMany(results);
+  resultSchema.insertMany(results, function (err, data) {
+    if (err != null) {
+      res.send("Error occurred.");
+    } else {
+      res.send("Success!");
+    }
+  });
 });
 
 /* definitions of data record on the database: 'ibukiquiz'*/

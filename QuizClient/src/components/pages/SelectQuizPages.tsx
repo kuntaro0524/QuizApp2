@@ -8,13 +8,18 @@ import {
   grid,
   Grid,
   GridItem,
+  NumberInput,
+  NumberInputField,
   Select,
   SimpleGrid,
   Switch,
+  Text,
   VStack,
 } from "@chakra-ui/react";
-import { ChangeEvent, VFC } from "react";
+import { ChangeEvent, useState, VFC } from "react";
 import { Link } from "react-router-dom";
+import { setConstantValue } from "typescript";
+// import { PageSelection } from "../atoms/PageSelection";
 
 type Props = {
   username: string;
@@ -35,19 +40,36 @@ const pages = [
   },
 ];
 
-const howto_select = [
-  { subject: "english", sele_method: "category" },
-  { subject: "social", sele_method: "page" },
-  { subject: "science", sele_method: "page" },
-]
 
-const getHowToSelect = (subject_name: string) => {
-  let result = howto_select.filter(item => item.subject === subject_name)[0]
-  console.log(result.sele_method);
-  return result.sele_method;
-}
 
 export const SelectQuizPages: VFC<Props> = (props) => {
+  // どういう問題選定にするかのフラグ
+  let [isPage, setIsPage] = useState(false);
+  let [isCat, setIsCat] = useState(false);
+  let [startPage, setStartPage] = useState(1);
+  let [endPage, setEndPage] = useState(1000);
+
+  const howto_select = [
+    { subject: "english", sele_method: "category" },
+    { subject: "social", sele_method: "page" },
+    { subject: "science", sele_method: "page" },
+  ]
+
+  const getHowToSelect = (subject_name: string) => {
+    let result = howto_select.filter(item => item.subject === subject_name)[0]
+    console.log("選ばれたのは" + result.sele_method);
+    if (result.sele_method === "category") {
+      setIsCat(true);
+      setIsPage(false);
+
+    }
+    if (result.sele_method === "page") {
+      setIsPage(true);
+      setIsCat(false);
+    }
+    return result.sele_method;
+  }
+
   const { username } = props;
   console.log(`あなたは${username}さんですね`);
 
@@ -89,6 +111,24 @@ export const SelectQuizPages: VFC<Props> = (props) => {
             <option value='english'>英語</option>
             <option value='science'>理科</option>
           </Select>
+          <Box color={"green"} >
+            {isPage ?
+              <Flex>
+                <Text>
+                  From
+                </Text>
+                <NumberInput width={'150px'} onChange={(valueString) => setStartPage(parseInt(valueString))}
+                  value={startPage} defaultValue={1} min={1} max={600} >
+                  <NumberInputField />
+                </NumberInput>
+                <Text>
+                  To
+                </Text>
+                <NumberInput width={'150px'} value={endPage} onChange={(valueString) => setEndPage(parseInt(valueString))} defaultValue={100} min={1} max={600} >
+                  <NumberInputField />
+                </NumberInput>
+              </Flex> : null}
+          </Box>
           <FormControl display='flex' alignItems='center'>
             <FormLabel color="black" htmlFor='email-alerts' mb='0'>
               本気モード？

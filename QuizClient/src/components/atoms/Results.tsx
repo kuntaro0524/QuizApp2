@@ -18,7 +18,6 @@ export const Results = () => {
   }, []);
   const props = { username: "kuntaro", subject: "english", category: "papa" };
   console.log("UNKOUNKO");
-
   console.log(dbResultArray);
 
   //   ユーザ名と科目名で結果配列から適合するものを抽出
@@ -41,6 +40,8 @@ export const Results = () => {
 
     if (diff_hours < 24.0) return true;
   });
+
+  console.log(theResult);
 
   const correctResults = theResult.filter(function (item, index) {
     return item.isCorrect;

@@ -83,6 +83,65 @@ export const useQuiz = () => {
     });
   };
 
+  type PropsCorrRatio = {
+    corr_ratio_thresh: number;
+  };
+
+  const filterCorrRatio = (props: PropsCorrRatio) => {
+    const { corr_ratio_thresh } = props;
+    const filtered_quiz = quizArray.filter(function (quiz) {
+      console.log(quiz.corr_ratio);
+      return quiz.ntrial < 2 || quiz.corr_ratio < corr_ratio_thresh;
+    });
+    console.log("<<<< before corr_ratio threshold filter >>>>>");
+    console.log(quizArray);
+    console.log("<<<< after  corr_ratio threshold filter >>>>>");
+    console.log(quizArray);
+  };
+
+  type PropsRand = {
+    nQuizes: number;
+    corr_ratio_thresh: number;
+  };
+
+  const selectRandomQuizes = (props: PropsRand) => {
+    function intRandom(n_keys: number) {
+      return Math.floor(Math.random() * n_keys);
+    }
+    // corr_ratio_thresh: ％です
+    const { nQuizes, corr_ratio_thresh } = props;
+    let qlength = quizArray.length;
+    console.log("This is selectRandomQuizes: all quizes=" + qlength);
+    // 最初に正答率などでフィルタをかける
+    filterCorrRatio({ corr_ratio_thresh });
+    // 次にランダムに要素を抽出する
+    // 既出ランダム配列のindexを格納する配列
+    let selected_rand: number[] = [];
+    // 新しいクイズ配列の格納
+    let selected_quizes: QuizInfo[] = [];
+
+    console.log("Making a list of the new quiz:" + nQuizes);
+
+    for (let i = 0; i < nQuizes; i++) {
+      while (true) {
+        var tmpindex = intRandom(qlength);
+        console.log("Random index=" + tmpindex);
+
+        if (!selected_rand.includes(tmpindex)) {
+          selected_rand.push(tmpindex);
+          selected_quizes.push(quizArray[tmpindex]);
+          console.log(quizArray[tmpindex]);
+          break;
+        }
+      }
+    }
+    console.log("selcted lengths:" + selected_quizes.length);
+    console.log(selected_quizes);
+
+    setQuizArray(selected_quizes);
+    console.log("The number of selected quizes: quizes=" + quizArray.length);
+  };
+
   const useDBs = (props: Props) => {
     const { start_page, end_page, subject, category, isCat } = props;
     const { showMessage } = useMessage();
@@ -146,5 +205,14 @@ export const useQuiz = () => {
     }, []);
   };
 
-  return { quizArray, setQuizArray, useDBs, isRead, qNum, patchQuiz, updateDB };
+  return {
+    quizArray,
+    setQuizArray,
+    useDBs,
+    isRead,
+    qNum,
+    patchQuiz,
+    updateDB,
+    selectRandomQuizes,
+  };
 };

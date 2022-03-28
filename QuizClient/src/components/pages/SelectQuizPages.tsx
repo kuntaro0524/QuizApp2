@@ -14,11 +14,14 @@ import {
   SimpleGrid,
   Switch,
   Text,
+  useQuery,
+  useTabsDescendantsContext,
   VStack,
 } from "@chakra-ui/react";
 import { ChangeEvent, useState, VFC } from "react";
 import { Link } from "react-router-dom";
 import { setConstantValue } from "typescript";
+import { useQuiz } from "../hooks/useQuiz";
 // import { PageSelection } from "../atoms/PageSelection";
 
 type Props = {
@@ -40,35 +43,38 @@ const pages = [
   },
 ];
 
-
-
 export const SelectQuizPages: VFC<Props> = (props) => {
   // どういう問題選定にするかのフラグ
   let [isPage, setIsPage] = useState(false);
   let [isCat, setIsCat] = useState(false);
   let [startPage, setStartPage] = useState(1);
   let [endPage, setEndPage] = useState(1000);
+  // 問題数を限定するためのフックス
+  let [nQuestion, setNquestion] = useState(10);
+
+  const { selectRandomQuizes } = useQuiz();
 
   const howto_select = [
     { subject: "english", sele_method: "category" },
     { subject: "social", sele_method: "page" },
     { subject: "science", sele_method: "page" },
-  ]
+  ];
 
   const getHowToSelect = (subject_name: string) => {
-    let result = howto_select.filter(item => item.subject === subject_name)[0]
+    let result = howto_select.filter(
+      (item) => item.subject === subject_name
+    )[0];
     console.log("選ばれたのは" + result.sele_method);
     if (result.sele_method === "category") {
       setIsCat(true);
       setIsPage(false);
-
     }
     if (result.sele_method === "page") {
       setIsPage(true);
       setIsCat(false);
     }
     return result.sele_method;
-  }
+  };
 
   const { username } = props;
   console.log(`あなたは${username}さんですね`);
@@ -81,7 +87,7 @@ export const SelectQuizPages: VFC<Props> = (props) => {
   const onChangeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const designated_subject = e.target.value;
     getHowToSelect(designated_subject);
-  }
+  };
 
   return (
     <Flex>
@@ -104,42 +110,73 @@ export const SelectQuizPages: VFC<Props> = (props) => {
               </Link>
             </GridItem>
           ))}
-          // ここから新型のやつを実装してみる
-          // まずは教科を選択する
-          <Select textAlign='center' fontSize={'25px'} width='250px' color='black' placeholder='Select option' bg={'teal.200'} onChange={onChangeSelect}>
-            <option value='social' >社会</option>
-            <option value='english'>英語</option>
-            <option value='science'>理科</option>
+          // ここから新型のやつを実装してみる // まずは教科を選択する
+          <Select
+            textAlign="center"
+            fontSize={"25px"}
+            width="250px"
+            color="black"
+            placeholder="Select option"
+            bg={"teal.200"}
+            onChange={onChangeSelect}
+          >
+            <option value="social">社会</option>
+            <option value="english">英語</option>
+            <option value="science">理科</option>
           </Select>
-          <Box color={"green"} >
-            {isPage ?
+          <Box color={"green"}>
+            {isPage ? (
               <Flex>
-                <Text>
-                  From
-                </Text>
-                <NumberInput width={'150px'} onChange={(valueString) => setStartPage(parseInt(valueString))}
-                  value={startPage} defaultValue={1} min={1} max={600} >
+                <Text>From</Text>
+                <NumberInput
+                  width={"150px"}
+                  onChange={(valueString) =>
+                    setStartPage(parseInt(valueString))
+                  }
+                  value={startPage}
+                  defaultValue={1}
+                  min={1}
+                  max={600}
+                >
                   <NumberInputField />
                 </NumberInput>
-                <Text>
-                  To
-                </Text>
-                <NumberInput width={'150px'} value={endPage} onChange={(valueString) => setEndPage(parseInt(valueString))} defaultValue={100} min={1} max={600} >
+                <Text>To</Text>
+                <NumberInput
+                  width={"150px"}
+                  value={endPage}
+                  onChange={(valueString) => setEndPage(parseInt(valueString))}
+                  defaultValue={100}
+                  min={1}
+                  max={600}
+                >
                   <NumberInputField />
                 </NumberInput>
-              </Flex> : null}
+              </Flex>
+            ) : null}
           </Box>
-          <FormControl display='flex' alignItems='center'>
-            <FormLabel color="black" htmlFor='email-alerts' mb='0'>
+          <Flex>
+            <Text color="blue">問題数を限定する</Text>
+            <NumberInput
+              width={"150px"}
+              value={nQuestion}
+              onChange={(valueString) => setNquestion(parseInt(valueString))}
+              defaultValue={100}
+              min={1}
+              max={600}
+              color={"brown"}
+            >
+              <NumberInputField />
+            </NumberInput>
+          </Flex>
+          <FormControl display="flex" alignItems="center">
+            <FormLabel color="black" htmlFor="email-alerts" mb="0">
               本気モード？
             </FormLabel>
-            <Switch id='email-alerts' />
+            <Switch id="email-alerts" />
           </FormControl>
-          <Button colorScheme={'teal'}>
-            問題を作成する
-          </Button>
+          <Button colorScheme={"teal"}>問題を作成する</Button>
         </Box>
       </VStack>
-    </Flex >
+    </Flex>
   );
 };

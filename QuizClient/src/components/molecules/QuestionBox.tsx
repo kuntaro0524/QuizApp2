@@ -4,6 +4,8 @@ import {
   Box,
   Button,
   Flex,
+  Grid,
+  GridItem,
   Image,
   Input,
   Stack,
@@ -34,7 +36,7 @@ type Props = {
 };
 
 export const QuestionBox = (props: Props) => {
-  const { quizArray, setQuizArray, updateDB } = useQuiz();
+  const { quizArray, setQuizArray, updateDB, selectRandomQuizes } = useQuiz();
   const { resultArray, setResultArray, useResult } = useCycleResult();
   const { isFilter, filter_ratio, subject } = props;
   const { selectedUser } = useUser();
@@ -118,6 +120,9 @@ export const QuestionBox = (props: Props) => {
   const onClickNextQuestion = () => {
     console.log("Button was pushed");
     console.log("Correct Flag=" + isCorrect);
+
+    // ちょっとテスト
+    selectRandomQuizes({ nQuizes: 10, corr_ratio_thresh: 100.0 });
 
     if (!isAnswered) {
       const title = "まだ答えていないのではないですか？";

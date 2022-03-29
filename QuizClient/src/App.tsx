@@ -39,46 +39,7 @@ function App() {
                   <h1> Ibuki Quiz app ver 1.0 2021/12/24 </h1>
                   <Routes>
                     <Route path="/" element={<QuizLogin />} />
-                    <Route
-                      path="english"
-                      element={
-                        <QuizSelection
-                          subject={"english"}
-                          category={"textbook"}
-                          isCat={true}
-                        />
-                      }
-                    />
-                    <Route
-                      path="english_papa"
-                      element={
-                        <QuizSelection
-                          subject={"english"}
-                          category={"papa"}
-                          isCat={true}
-                        />
-                      }
-                    />
-                    <Route
-                      path="english_work"
-                      element={
-                        <QuizSelection
-                          subject={"english"}
-                          category={"work"}
-                          isCat={true}
-                        />
-                      }
-                    />
-                    <Route
-                      path="kdev"
-                      element={
-                        <QuizSelection
-                          subject={"kdev"}
-                          isCat={false}
-                          category={""}
-                        />
-                      }
-                    />
+                    <Route path="quiz" element={<QuizSelection />} />
                     {/* クエリパラメータを有効にしてみる */}
                     <Route path="/results" element={<Results />} />
                     <Route path="/login" element={<QuizLogin />} />

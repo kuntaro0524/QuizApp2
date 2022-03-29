@@ -42,11 +42,6 @@ export const QuizLayout = (props: Props) => {
   const { quizArray, setQuizArray, useDBs, isRead, qNum } = useQuiz();
   const [thresh, setThresh] = useState(75.0);
 
-  // const onChangeThresh = (e: ChangeEvent<HTMLInputElement>) => {
-  //   console.log(e.target.value);
-  //   setThresh(parseFloat(e.target.value));
-  // };
-
   // サイクルが一周したときに正答率でフィルタをかけるかどうかのフラグ
   // デフォルトはtrue
   const [isFilter, setFilter] = useState(true);
@@ -60,6 +55,8 @@ export const QuizLayout = (props: Props) => {
     category: category,
     isCat: isCat,
   };
+
+  console.log(values);
 
   useDBs(values);
 
@@ -86,26 +83,6 @@ export const QuizLayout = (props: Props) => {
           {isFilter ? <h1>正答率フィルタON </h1> : <h1>正答率フィルタOFF</h1>}
         </Checkbox>
       </Flex>
-      {/* <Flex>
-        <RangeSlider
-          aria-label={["min", "max"]}
-          min={0}
-          max={1000}
-          step={1}
-          // value={[200, 800]}
-          onChangeEnd={defineRange}
-          // onChangeStart={(val) => setPageStart(val[0])}
-        >
-          <RangeSliderTrack>
-            <RangeSliderFilledTrack />
-          </RangeSliderTrack>
-          <RangeSliderThumb index={0} />
-          <RangeSliderThumb index={1} />
-        </RangeSlider>
-        <p>
-          {pageStart} {pageEnd}
-        </p>
-      </Flex> */}
       <Flex>
         <Slider
           isDisabled={!isFilter}

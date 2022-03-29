@@ -112,6 +112,13 @@ export const useQuiz = () => {
     const { nQuizes, corr_ratio_thresh } = props;
     let qlength = quizArray.length;
     console.log("This is selectRandomQuizes: all quizes=" + qlength);
+
+    let nprep = 0;
+    if (nQuizes > qlength) {
+      nprep = qlength;
+    } else {
+      nprep = nQuizes;
+    }
     // 最初に正答率などでフィルタをかける
     filterCorrRatio({ corr_ratio_thresh });
     // 次にランダムに要素を抽出する
@@ -120,9 +127,9 @@ export const useQuiz = () => {
     // 新しいクイズ配列の格納
     let selected_quizes: QuizInfo[] = [];
 
-    console.log("Making a list of the new quiz:" + nQuizes);
+    console.log("Making a list of the new quiz:" + nprep);
 
-    for (let i = 0; i < nQuizes; i++) {
+    for (let i = 0; i < nprep; i++) {
       while (true) {
         var tmpindex = intRandom(qlength);
         console.log("Random index=" + tmpindex);
@@ -137,9 +144,7 @@ export const useQuiz = () => {
     }
     console.log("selcted lengths:" + selected_quizes.length);
     console.log(selected_quizes);
-
     setQuizArray(selected_quizes);
-    console.log("The number of selected quizes: quizes=" + quizArray.length);
   };
 
   const useDBs = (props: Props) => {

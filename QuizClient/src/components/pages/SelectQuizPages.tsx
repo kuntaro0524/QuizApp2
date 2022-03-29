@@ -19,8 +19,9 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { ChangeEvent, useState, VFC } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { setConstantValue } from "typescript";
+import { QuizSelection } from "../atoms/QuizSelection";
 import { useQuiz } from "../hooks/useQuiz";
 // import { PageSelection } from "../atoms/PageSelection";
 
@@ -51,6 +52,9 @@ export const SelectQuizPages: VFC<Props> = (props) => {
   let [endPage, setEndPage] = useState(1000);
   // 問題数を限定するためのフックス
   let [nQuestion, setNquestion] = useState(10);
+
+  // ボタンを押してリンク先へ移動したい
+  const navigate = useNavigate();
 
   const { selectRandomQuizes } = useQuiz();
 
@@ -89,27 +93,15 @@ export const SelectQuizPages: VFC<Props> = (props) => {
     getHowToSelect(designated_subject);
   };
 
+  const onClickGen = () => {
+    console.log("Generate button was pushed.");
+    navigate("/english");
+  };
+
   return (
     <Flex>
       <VStack>
         <Box gap={1} bg="white" color="white">
-          {quizlist.map((quizpage, index) => (
-            <GridItem
-              key={index}
-              h="100"
-              w="100%"
-              colSpan={1}
-              color="white"
-              bg="teal"
-              borderRadius={35}
-            >
-              <Link key={index} to={quizpage.link}>
-                <Center h="full" textStyle="bold">
-                  {quizpage.title}
-                </Center>
-              </Link>
-            </GridItem>
-          ))}
           // ここから新型のやつを実装してみる // まずは教科を選択する
           <Select
             textAlign="center"
@@ -127,7 +119,7 @@ export const SelectQuizPages: VFC<Props> = (props) => {
           <Box color={"green"}>
             {isPage ? (
               <Flex>
-                <Text>From</Text>
+                <Text>ページを選択</Text>
                 <NumberInput
                   width={"150px"}
                   onChange={(valueString) =>
@@ -161,8 +153,6 @@ export const SelectQuizPages: VFC<Props> = (props) => {
               value={nQuestion}
               onChange={(valueString) => setNquestion(parseInt(valueString))}
               defaultValue={100}
-              min={1}
-              max={600}
               color={"brown"}
             >
               <NumberInputField />
@@ -174,7 +164,9 @@ export const SelectQuizPages: VFC<Props> = (props) => {
             </FormLabel>
             <Switch id="email-alerts" />
           </FormControl>
-          <Button colorScheme={"teal"}>問題を作成する</Button>
+          <Button colorScheme={"teal"} onClick={onClickGen}>
+            問題を作成する
+          </Button>
         </Box>
       </VStack>
     </Flex>

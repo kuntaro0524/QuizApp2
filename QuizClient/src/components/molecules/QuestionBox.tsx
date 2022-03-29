@@ -122,7 +122,10 @@ export const QuestionBox = (props: Props) => {
     console.log("Correct Flag=" + isCorrect);
 
     // ちょっとテスト
-    selectRandomQuizes({ nQuizes: 10, corr_ratio_thresh: 100.0 });
+    // selectRandomQuizes({ nQuizes: 10, corr_ratio_thresh: 0.5 });
+    // console.log("#####################################H");
+    // console.log(quizArray);
+    // console.log("#####################################H");
 
     if (!isAnswered) {
       const title = "まだ答えていないのではないですか？";

@@ -6,7 +6,9 @@ import { useSearchParams } from "react-router-dom";
 
 // 引数ではなくてURLパラメータを読むことにした
 // 期待しているURLは以下のような感じ
-// `/quiz?username=kuntaro&subject=${subject}`;
+// 最初にうまくいったURLリンクはこんなの
+// 重要なことは""をつけたらややこしいことになるって話かな
+// quiz?username="kuntaro"&subject=english&start_page=1&end_page=10000&category=papa&isCat="true"
 
 export const QuizSelection = () => {
   // こういうhooksがある

@@ -8,14 +8,6 @@ import { useMessage } from "./useMessage";
 
 // useContextを利用していることをカプセル化するためのクラス（らしい）
 
-type Props = {
-  subject: string;
-  start_page: number;
-  end_page: number;
-  category: string;
-  isCat: boolean /* カテゴリを設定するかどうか */;
-};
-
 type Props2 = {
   subject: string;
   id: string;
@@ -147,8 +139,17 @@ export const useQuiz = () => {
     setQuizArray(selected_quizes);
   };
 
+  type Props = {
+    subject: string;
+    start_page: number;
+    end_page: number;
+    category: string;
+    isCat: boolean /* カテゴリを設定するかどうか */;
+    nQuestion: number;
+  };
+
   const useDBs = (props: Props) => {
-    const { start_page, end_page, subject, category, isCat } = props;
+    const { start_page, end_page, subject, category, isCat, nQuestion } = props;
     const { showMessage } = useMessage();
 
     useEffect(() => {

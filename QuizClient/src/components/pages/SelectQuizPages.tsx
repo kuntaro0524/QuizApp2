@@ -46,10 +46,11 @@ const pages = [
 
 export const SelectQuizPages: VFC<Props> = (props) => {
   // どういう問題選定にするかのフラグ
+  let [subject, setSubject] = useState("");
   let [isPage, setIsPage] = useState(false);
   let [isCat, setIsCat] = useState(false);
-  let [startPage, setStartPage] = useState(1);
-  let [endPage, setEndPage] = useState(1000);
+  let [startPage, setStartPage] = useState(0);
+  let [endPage, setEndPage] = useState(999999);
   // 問題数を限定するためのフックス
   let [nQuestion, setNquestion] = useState(10);
 
@@ -68,6 +69,8 @@ export const SelectQuizPages: VFC<Props> = (props) => {
     let result = howto_select.filter(
       (item) => item.subject === subject_name
     )[0];
+    // 教科をフックスに登録
+    setSubject(result.subject);
     console.log("選ばれたのは" + result.sele_method);
     if (result.sele_method === "category") {
       setIsCat(true);
@@ -95,7 +98,9 @@ export const SelectQuizPages: VFC<Props> = (props) => {
 
   const onClickGen = () => {
     console.log("Generate button was pushed.");
-    navigate("/english");
+    navigate(
+      `/quiz?username=${username}&subject=${subject}&start_page=${startPage}&end_page=${endPage}&category=papa&isCat=${isCat}&nQuestion=${nQuestion}`
+    );
   };
 
   return (

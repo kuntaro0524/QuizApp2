@@ -20,12 +20,13 @@ export const QuizSelection = () => {
   let start_page = parseInt(searchParams.get("start_page")!);
   let end_page = parseInt(searchParams.get("end_page")!);
   let category = searchParams.get("category")!;
+  let nQuestion = parseInt(searchParams.get("nQuestion")!);
   let tmpIsCat = searchParams.get("isCat")!;
   if (tmpIsCat.includes("true")) {
     isCat = true;
   }
 
-  console.log(subject, start_page, end_page, isCat);
+  console.log(subject, start_page, end_page, isCat, nQuestion);
 
   return (
     <>
@@ -35,6 +36,7 @@ export const QuizSelection = () => {
         start_page={start_page}
         end_page={end_page}
         isCat={isCat}
+        nQuestion={nQuestion}
       />
     </>
   );

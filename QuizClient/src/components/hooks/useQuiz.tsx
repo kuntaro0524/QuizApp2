@@ -21,6 +21,8 @@ export const useQuiz = () => {
   const [qNum, setQnum] = useState<number>(0);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
 
+  const [selQuizArray, setSelectQuizArray] = useState<Array<QuizInfo>>([]);
+
   const server_url = process.env.REACT_APP_SERVER_URL;
   const server_port = process.env.REACT_APP_SERVER_PORT;
 
@@ -93,7 +95,7 @@ export const useQuiz = () => {
 
   type PropsRand = {
     nQuizes: number;
-    corr_ratio_thresh: number;
+    qArray: QuizInfo[];
   };
 
   const selectRandomQuizes = (props: PropsRand) => {
@@ -101,8 +103,8 @@ export const useQuiz = () => {
       return Math.floor(Math.random() * n_keys);
     }
     // corr_ratio_thresh: ％です
-    const { nQuizes, corr_ratio_thresh } = props;
-    let qlength = quizArray.length;
+    const { nQuizes, qArray } = props;
+    let qlength = qArray.length;
     console.log("This is selectRandomQuizes: all quizes=" + qlength);
 
     let nprep = 0;
@@ -111,8 +113,6 @@ export const useQuiz = () => {
     } else {
       nprep = nQuizes;
     }
-    // 最初に正答率などでフィルタをかける
-    filterCorrRatio({ corr_ratio_thresh });
     // 次にランダムに要素を抽出する
     // 既出ランダム配列のindexを格納する配列
     let selected_rand: number[] = [];
@@ -128,15 +128,15 @@ export const useQuiz = () => {
 
         if (!selected_rand.includes(tmpindex)) {
           selected_rand.push(tmpindex);
-          selected_quizes.push(quizArray[tmpindex]);
-          console.log(quizArray[tmpindex]);
+          selected_quizes.push(qArray[tmpindex]);
+          console.log(qArray[tmpindex]);
           break;
         }
       }
     }
     console.log("selcted lengths:" + selected_quizes.length);
     console.log(selected_quizes);
-    setQuizArray(selected_quizes);
+    return selected_quizes;
   };
 
   type Props = {
@@ -163,31 +163,38 @@ export const useQuiz = () => {
           }
         )
         .then((res) => {
-          console.log("<<<< BEFORE >>>>>");
+          console.log("<<<< useDBs Before >>>>>");
           console.log(res.data);
+          // カテゴリによる選定の場合
+          let filtered_quiz = null;
           if (isCat) {
-            const filtered_quiz = res.data.filter(
+            filtered_quiz = res.data.filter(
               (quiz) =>
                 quiz.page >= start_page &&
                 quiz.page <= end_page &&
                 quiz.category === category
             );
-            console.log("<<<< AFTER >>>>>" + filtered_quiz.length);
+            console.log("<<<< useDBs after >>>>>" + filtered_quiz.length);
             if (filtered_quiz.length === 0) {
               showMessage({
                 title: "フィルター後のクイズがないよ",
                 status: "error",
               });
+            } else {
+              const new_array = selectRandomQuizes({ nQuizes: nQuestion, qArray: filtered_quiz });
+              filtered_quiz = [...new_array];
+              console.log("New selected quiz length=" + new_array.length);
             }
-            setQuizArray(filtered_quiz);
-            setQnum(filtered_quiz.length);
           } else {
-            setQuizArray(res.data);
-            setQnum(res.data.length);
+            // カテゴリによる選定ではない場合
+            filtered_quiz = [...res.data];
           }
+          console.log(filtered_quiz);
 
+          // さらにランダムに指定数だけクイズをせんたくする
+          setQuizArray(filtered_quiz);
+          setQnum(filtered_quiz.length);
           setIsRead(true);
-          console.log(quizArray);
         })
         .catch(function (error) {
           console.log("ERROR?");
@@ -220,5 +227,6 @@ export const useQuiz = () => {
     patchQuiz,
     updateDB,
     selectRandomQuizes,
+    selQuizArray
   };
 };

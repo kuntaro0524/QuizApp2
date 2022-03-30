@@ -36,13 +36,13 @@ type Props = {
 };
 
 export const QuestionBox = (props: Props) => {
-  const { quizArray, setQuizArray, updateDB, selectRandomQuizes } = useQuiz();
+  const { quizArray, setQuizArray, updateDB, selectRandomQuizes, selQuizArray } = useQuiz();
   const { resultArray, setResultArray, useResult } = useCycleResult();
   const { isFilter, filter_ratio, subject } = props;
   const { selectedUser } = useUser();
   const { showMessage } = useMessage();
 
-  console.log("SUBJECT=" + subject);
+  console.log("Top of QuestionBox: SUBJECT=" + subject);
   const navigate = useNavigate();
 
   const {
@@ -121,12 +121,6 @@ export const QuestionBox = (props: Props) => {
     console.log("Button was pushed");
     console.log("Correct Flag=" + isCorrect);
 
-    // ちょっとテスト
-    // selectRandomQuizes({ nQuizes: 10, corr_ratio_thresh: 0.5 });
-    // console.log("#####################################H");
-    // console.log(quizArray);
-    // console.log("#####################################H");
-
     if (!isAnswered) {
       const title = "まだ答えていないのではないですか？";
       const status = "error";
@@ -134,7 +128,7 @@ export const QuestionBox = (props: Props) => {
       return;
     }
 
-    // 各設問に対する成績を埋めていくわけです
+    // 各設問に対する成績を埋めていく
     // この問題の成績を更新する
     const new_ntry = currQ.ntrial + 1;
     let new_ncorr = currQ.ncorr;

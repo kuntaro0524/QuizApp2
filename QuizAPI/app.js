@@ -65,6 +65,7 @@ app.get("/user", function (req, res) {
 // ログイン用の情報を別のcollectionで保持する
 const result_schema = {
   user: String,
+  quizMatchID: String,
   subject: String,
   q_id: String,
   isCorrect: Boolean,

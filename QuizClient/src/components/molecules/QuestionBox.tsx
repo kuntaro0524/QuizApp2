@@ -33,12 +33,13 @@ type Props = {
   isFilter: boolean;
   filter_ratio: number;
   subject: string;
+  quizMatchID: string;
 };
 
 export const QuestionBox = (props: Props) => {
   const { quizArray, setQuizArray, updateDB, selectRandomQuizes, selQuizArray } = useQuiz();
   const { resultArray, setResultArray, useResult } = useCycleResult();
-  const { isFilter, filter_ratio, subject } = props;
+  const { isFilter, filter_ratio, subject, quizMatchID } = props;
   const { selectedUser } = useUser();
   const { showMessage } = useMessage();
 
@@ -169,6 +170,7 @@ export const QuestionBox = (props: Props) => {
     // このクイズの結果を結果DBへ登録するために結果配列へ格納
     const aresult = {
       user: selectedUser.name,
+      quizMatchID: quizMatchID,
       subject: subject,
       q_id: quizid,
       isCorrect: isCorrect,
@@ -177,8 +179,10 @@ export const QuestionBox = (props: Props) => {
       ncorr: new_ncorr,
       corr_ratio: tmp_corr_ratio,
     };
+    console.log(aresult);
 
     setResultArray([...resultArray, aresult]);
+
 
     // クイズのインデックスをインクリメント
     let nextIndex = qindex + 1;

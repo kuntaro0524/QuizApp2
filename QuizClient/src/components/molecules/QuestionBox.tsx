@@ -117,6 +117,27 @@ export const QuestionBox = (props: Props) => {
     console.log(quizArray);
   };
 
+  const checkResult = (currentQ: QuizInfo) => {
+    let filter_result = resultArray.filter((elem) => elem.q_id === currentQ._id);
+    console.log(filter_result);
+
+    if (filter_result.length == 0) {
+      console.log('まだ回答されていないので1にします。');
+      return { ntrial: 1, ncorr: 0 }
+    } else {
+      // 正解したやつを選択する
+      let corr_result = filter_result.filter((elem) => elem.isCorrect === true);
+      if (corr_result.length === 0) {
+        console.log("正解したクイズがないですね");
+      } else {
+        console.log(`これまでに${corr_result.length}回正答しています！`)
+      }
+      let ntrial = filter_result.length;
+      let ncorr = corr_result.length;
+      return { ntrial: ntrial, ncorr: ncorr }
+    }
+  }
+
   // 次のクイズボタンを押したらインデックスが変わる
   const onClickNextQuestion = () => {
     console.log("Button was pushed");
@@ -167,7 +188,13 @@ export const QuestionBox = (props: Props) => {
     // データベースで見て計算しやすいようにunix timeで格納する
     const dtime = new Date().getTime() / 1000.0;
 
+    console.log("> Current result array");
+    console.log(resultArray);
+    console.log("< Current result array");
+
     // このクイズの結果を結果DBへ登録するために結果配列へ格納
+    let { ntrial, ncorr } = checkResult(currQ);
+
     const aresult = {
       user: selectedUser.name,
       quizMatchID: quizMatchID,
@@ -175,24 +202,25 @@ export const QuestionBox = (props: Props) => {
       q_id: quizid,
       isCorrect: isCorrect,
       datetime: dtime,
-      ntrial: new_ntry,
-      ncorr: new_ncorr,
+      ntrial: ntrial,
+      ncorr: ncorr,
       corr_ratio: tmp_corr_ratio,
     };
-    console.log(aresult);
 
     setResultArray([...resultArray, aresult]);
-
 
     // クイズのインデックスをインクリメント
     let nextIndex = qindex + 1;
     console.log(`クイズサイズ ${quizArray.length} 次 ${nextIndex}`);
 
-    // もしもすべてのクイズが終わったら
+    // もしもこのサイクルが終わったら
     if (quizArray.length === nextIndex) {
-      console.log("next index is reset to 0.");
+      console.log("One cycle was finished.");
+      console.log("The quiz index is reset to 0.");
       nextIndex = 0;
+      // サイクル数をインクリメント
       setCycle(ncycle + 1);
+      // Quizインデックスを０にする
       setQindex(0);
       // ここでフィルターフラグがあればフィルターしてしまう;
       filterQuizes(filter_ratio);

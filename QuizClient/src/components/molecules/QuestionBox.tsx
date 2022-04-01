@@ -118,13 +118,17 @@ export const QuestionBox = (props: Props) => {
   };
 
   const checkResult = (currentQ: QuizInfo) => {
-    let filter_result = resultArray.filter((elem) => elem.q_id === currentQ._id);
-    console.log(filter_result);
+    console.log("このクイズについて結果を評価します");
+    console.log(isAnswered, isCorrect);
 
+    let filter_result = resultArray.filter((elem) => elem.q_id === currentQ._id);
+
+    // 回答数を配列から調査
     if (filter_result.length == 0) {
       console.log('まだ回答されていないので1にします。');
       return { ntrial: 1, ncorr: 0 }
     } else {
+      console.log(`これまでに${filter_result.length}回、回答されています`);
       // 正解したやつを選択する
       let corr_result = filter_result.filter((elem) => elem.isCorrect === true);
       if (corr_result.length === 0) {
@@ -198,6 +202,7 @@ export const QuestionBox = (props: Props) => {
     const aresult = {
       user: selectedUser.name,
       quizMatchID: quizMatchID,
+      cycle: ncycle,
       subject: subject,
       q_id: quizid,
       isCorrect: isCorrect,

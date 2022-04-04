@@ -200,6 +200,8 @@ export const useQuiz = () => {
             }
           } else {
             // カテゴリによる選定ではない場合
+            console.log("カテゴリ選定ではないね");
+
             const new_array = selectRandomQuizes({
               nQuizes: nQuestion,
               qArray: res.data,

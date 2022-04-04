@@ -28,6 +28,7 @@ import { useMyImage } from "../hooks/useImage";
 import { useCycleResult } from "../hooks/useCycleResult";
 import { useUser } from "../hooks/useUser";
 import { useNavigate } from "react-router-dom";
+import { ResultInfo } from "../types/api/cycleresultinfo";
 
 type Props = {
   isFilter: boolean;
@@ -37,7 +38,13 @@ type Props = {
 };
 
 export const QuestionBox = (props: Props) => {
-  const { quizArray, setQuizArray, updateDB, selectRandomQuizes, selQuizArray } = useQuiz();
+  const {
+    quizArray,
+    setQuizArray,
+    updateDB,
+    selectRandomQuizes,
+    selQuizArray,
+  } = useQuiz();
   const { resultArray, setResultArray, useResult } = useCycleResult();
   const { isFilter, filter_ratio, subject, quizMatchID } = props;
   const { selectedUser } = useUser();
@@ -122,7 +129,9 @@ export const QuestionBox = (props: Props) => {
 
     // 回答数を保存されている配列から調査し、今回の結果を追加してアップデートする
     // 現在のクイズIDと整合する過去の結果を抜き出す
-    let filter_result = resultArray.filter((elem) => elem.q_id === currentQ._id);
+    let filter_result = resultArray.filter(
+      (elem) => elem.q_id === currentQ._id
+    );
     let ncorr = 0;
     let ntrial = 0;
 
@@ -138,9 +147,70 @@ export const QuestionBox = (props: Props) => {
       ncorr = corr_result.length;
     }
     // 正答率の計算 (%)
-    let corr_ratio = ncorr / ntrial * 100.0;
-    return { ntrial: ntrial, ncorr: ncorr, corr_ratio: corr_ratio }
-  }
+    let corr_ratio = (ncorr / ntrial) * 100.0;
+    return { ntrial: ntrial, ncorr: ncorr, corr_ratio: corr_ratio };
+  };
+
+  type PPProps = {
+    currResultArray: ResultInfo[];
+  };
+
+  // ちょっとした問題（2022/04/04）
+  // resultArrayを利用するのにもページが更新されないと配列も更新されないため、
+  // これまでの結果を評価して次のクイズリストを作成するときに問題になる
+  // つまり、つねに最後の問題について検討されないので困る。
+  // 結果を表示するときに再レンダリングはされるのでそのときにリストも更新するなどしたほうが良い？
+  const checkCurrentResult = (props: PPProps) => {
+    // まだ回答しなければいけないクイズID
+    let left_quizes: string[] = [];
+    // 調査したことがあるかどうかのフラグ的な配列
+    let checked_list: string[] = [];
+    const { currResultArray } = props;
+    console.log("Current length of results=" + currResultArray);
+
+    currResultArray.forEach((elem) => {
+      // 検討を進めている結果のIDについて
+      let target_id = elem.q_id;
+      console.log("検討しているTargetIDです" + target_id);
+
+      // これまでにチェックしたリストに入っていたら見ない
+      if (checked_list.includes(target_id)) {
+        console.log("すでに検討しました。スキップします");
+        // return って関数を終えるものではないのか。危ない
+        return;
+      }
+      // これまでチェックリストに入っていないかどうかを確認する
+      let duplicated_results = currResultArray.filter(
+        (elem2) => elem2.q_id === target_id
+      );
+
+      function compare(a: ResultInfo, b: ResultInfo) {
+        let rtn_value = 0;
+        if (a.datetime > b.datetime) {
+          rtn_value = -1;
+        } else if (b.datetime > a.datetime) {
+          rtn_value = 1;
+        }
+        return rtn_value;
+      }
+
+      let latest_result = duplicated_results.sort(compare)[0];
+      if (latest_result != null) {
+        checked_list.push(latest_result.q_id);
+        console.log(
+          `ID=${latest_result.q_id} Correction ratio=${latest_result.corr_ratio}`
+        );
+
+        // 最新の結果に記載してある正答率によってフィルタをかけるようにする
+        if (latest_result.corr_ratio < 75.0) {
+          left_quizes.push(latest_result.q_id);
+        }
+      }
+    });
+    console.log(left_quizes);
+
+    return left_quizes;
+  };
 
   // 次のクイズボタンを押したらインデックスが変わる
   const onClickNextQuestion = () => {
@@ -192,10 +262,6 @@ export const QuestionBox = (props: Props) => {
     // データベースで見て計算しやすいようにunix timeで格納する
     const dtime = new Date().getTime() / 1000.0;
 
-    console.log("> Current result array");
-    console.log(resultArray);
-    console.log("< Current result array");
-
     // このクイズの結果を結果DBへ登録するために結果配列へ格納
     let { ntrial, ncorr, corr_ratio } = checkResult(currQ);
     console.log(ntrial, ncorr, corr_ratio);
@@ -213,7 +279,12 @@ export const QuestionBox = (props: Props) => {
       corr_ratio: corr_ratio,
     };
 
-    setResultArray([...resultArray, aresult]);
+    let new_result_array = [...resultArray, aresult];
+    setResultArray(new_result_array);
+
+    console.log("> Current result array #1");
+    console.log(new_result_array);
+    console.log("< Current result array #1");
 
     // クイズのインデックスをインクリメント
     let nextIndex = qindex + 1;
@@ -221,6 +292,14 @@ export const QuestionBox = (props: Props) => {
 
     // もしもこのサイクルが終わったら
     if (quizArray.length === nextIndex) {
+      let cycleResults = checkCurrentResult({
+        currResultArray: new_result_array,
+      });
+      if (cycleResults.length == 0) {
+        const title = "すべての問題を完了しました！！！";
+        const status = "success";
+        showMessage({ title, status });
+      }
       console.log("One cycle was finished.");
       console.log("The quiz index is reset to 0.");
       nextIndex = 0;
@@ -229,7 +308,7 @@ export const QuestionBox = (props: Props) => {
       // Quizインデックスを０にする
       setQindex(0);
       // ここでフィルターフラグがあればフィルターしてしまう;
-      filterQuizes(filter_ratio);
+      // filterQuizes(filter_ratio);
       updateDB({ subject: subject });
     } else {
       // 今回何問問題をやっているか

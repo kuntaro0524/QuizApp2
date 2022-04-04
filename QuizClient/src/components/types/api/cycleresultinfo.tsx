@@ -1,5 +1,7 @@
 export type ResultInfo = {
   user: string;
+  quizMatchID: string;
+  cycle: number;
   subject: string;
   _id?: string;
   q_id: string;

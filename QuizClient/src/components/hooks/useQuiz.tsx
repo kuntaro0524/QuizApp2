@@ -15,8 +15,8 @@ type Props2 = {
 };
 
 export const useQuiz = () => {
+  // クイズの配列を保持するためのコンテキスト
   const { quizArray, setQuizArray } = useContext(AllQuizContext);
-  // (NtrialContextType) => useContext(AllQuizContext);
   const [isRead, setIsRead] = useState<boolean>(false);
   const [qNum, setQnum] = useState<number>(0);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
@@ -26,6 +26,7 @@ export const useQuiz = () => {
   const server_url = process.env.REACT_APP_SERVER_URL;
   const server_port = process.env.REACT_APP_SERVER_PORT;
 
+  // DB上のクイズ情報を更新するための関数
   const patchQuiz = (props2: Props2) => {
     console.log("patchQuiz was called.");
 
@@ -67,6 +68,9 @@ export const useQuiz = () => {
     subject: string;
   };
 
+  // APIのPATCHを利用して現時点の  quizArray をDBに登録する
+  // 基本的に quizArray の内容は別のところで更新されていて、DB上の対応するやつを
+  // 置き換えるというイメージ
   const updateDB = (props3: Props3) => {
     console.log("updateDB was called.");
 
@@ -76,6 +80,8 @@ export const useQuiz = () => {
       patchQuiz({ subject, id, newQuiz: eachquiz });
     });
   };
+
+  // filterCorrRatio 配列の操作部分をすべてこのカスタムフックに入れたいなというので移植してきた
 
   type PropsCorrRatio = {
     corr_ratio_thresh: number;
@@ -93,6 +99,8 @@ export const useQuiz = () => {
     console.log(quizArray);
   };
 
+  // ランダムなクイズを選択してそれを返す
+
   type PropsRand = {
     nQuizes: number;
     qArray: QuizInfo[];
@@ -105,13 +113,14 @@ export const useQuiz = () => {
     // corr_ratio_thresh: ％です
     const { nQuizes, qArray } = props;
     let qlength = qArray.length;
-    console.log("This is selectRandomQuizes: all quizes=" + qlength);
+    console.log("selectRandomQuizes is called: Current all quizes=" + qlength);
 
-    let nprep = 0;
+    // 確保すべきクイズの数が多すぎる場合には全クイズを利用する
     if (nQuizes > qlength) {
-      nprep = qlength;
-    } else {
-      nprep = nQuizes;
+      console.log(
+        "All quizes are used becuase the designated numbe of quizes exceeds the current quiz array."
+      );
+      return qArray;
     }
     // 次にランダムに要素を抽出する
     // 既出ランダム配列のindexを格納する配列
@@ -119,9 +128,9 @@ export const useQuiz = () => {
     // 新しいクイズ配列の格納
     let selected_quizes: QuizInfo[] = [];
 
-    console.log("Making a list of the new quiz:" + nprep);
+    console.log("Making a list of the new quiz:" + nQuizes);
 
-    for (let i = 0; i < nprep; i++) {
+    for (let i = 0; i < nQuizes; i++) {
       while (true) {
         var tmpindex = intRandom(qlength);
         console.log("Random index=" + tmpindex);
@@ -145,7 +154,7 @@ export const useQuiz = () => {
     end_page: number;
     category: string;
     isCat: boolean /* カテゴリを設定するかどうか */;
-    nQuestion: number;
+    nQuestion: number /* リストに入れるクイズの数 */;
   };
 
   const useDBs = (props: Props) => {
@@ -180,16 +189,23 @@ export const useQuiz = () => {
                 title: "フィルター後のクイズがないよ",
                 status: "error",
               });
+              // クイズの配列長さが０でなければランダムに必要な個数のクイズを準備する
             } else {
-              const new_array = selectRandomQuizes({ nQuizes: nQuestion, qArray: filtered_quiz });
+              const new_array = selectRandomQuizes({
+                nQuizes: nQuestion,
+                qArray: filtered_quiz,
+              });
               filtered_quiz = [...new_array];
               console.log("New selected quiz length=" + new_array.length);
             }
           } else {
             // カテゴリによる選定ではない場合
-            filtered_quiz = [...res.data];
+            const new_array = selectRandomQuizes({
+              nQuizes: nQuestion,
+              qArray: res.data,
+            });
+            filtered_quiz = [...new_array];
           }
-          console.log(filtered_quiz);
 
           // さらにランダムに指定数だけクイズをせんたくする
           setQuizArray(filtered_quiz);
@@ -227,6 +243,6 @@ export const useQuiz = () => {
     patchQuiz,
     updateDB,
     selectRandomQuizes,
-    selQuizArray
+    selQuizArray,
   };
 };

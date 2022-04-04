@@ -43,7 +43,7 @@ export const QuestionBox = (props: Props) => {
   const { selectedUser } = useUser();
   const { showMessage } = useMessage();
 
-  console.log("Top of QuestionBox: SUBJECT=" + subject);
+  // console.log("Top of QuestionBox: SUBJECT=" + subject);
   const navigate = useNavigate();
 
   const {
@@ -119,27 +119,27 @@ export const QuestionBox = (props: Props) => {
 
   const checkResult = (currentQ: QuizInfo) => {
     console.log("このクイズについて結果を評価します");
-    console.log(isAnswered, isCorrect);
 
+    // 回答数を保存されている配列から調査し、今回の結果を追加してアップデートする
+    // 現在のクイズIDと整合する過去の結果を抜き出す
     let filter_result = resultArray.filter((elem) => elem.q_id === currentQ._id);
+    let ncorr = 0;
+    let ntrial = 0;
 
-    // 回答数を配列から調査
-    if (filter_result.length == 0) {
-      console.log('まだ回答されていないので1にします。');
-      return { ntrial: 1, ncorr: 0 }
+    // これまでの回答数＋１がこの問題を含めた回答数＝サイクル数
+    ntrial = filter_result.length + 1;
+    // 正答数を数える
+    // これまでの分＋今回の分
+    let corr_result = filter_result.filter((elem) => elem.isCorrect === true);
+
+    if (isCorrect) {
+      ncorr = corr_result.length + 1;
     } else {
-      console.log(`これまでに${filter_result.length}回、回答されています`);
-      // 正解したやつを選択する
-      let corr_result = filter_result.filter((elem) => elem.isCorrect === true);
-      if (corr_result.length === 0) {
-        console.log("正解したクイズがないですね");
-      } else {
-        console.log(`これまでに${corr_result.length}回正答しています！`)
-      }
-      let ntrial = filter_result.length;
-      let ncorr = corr_result.length;
-      return { ntrial: ntrial, ncorr: ncorr }
+      ncorr = corr_result.length;
     }
+    // 正答率の計算 (%)
+    let corr_ratio = ncorr / ntrial * 100.0;
+    return { ntrial: ntrial, ncorr: ncorr, corr_ratio: corr_ratio }
   }
 
   // 次のクイズボタンを押したらインデックスが変わる
@@ -197,7 +197,8 @@ export const QuestionBox = (props: Props) => {
     console.log("< Current result array");
 
     // このクイズの結果を結果DBへ登録するために結果配列へ格納
-    let { ntrial, ncorr } = checkResult(currQ);
+    let { ntrial, ncorr, corr_ratio } = checkResult(currQ);
+    console.log(ntrial, ncorr, corr_ratio);
 
     const aresult = {
       user: selectedUser.name,
@@ -209,7 +210,7 @@ export const QuestionBox = (props: Props) => {
       datetime: dtime,
       ntrial: ntrial,
       ncorr: ncorr,
-      corr_ratio: tmp_corr_ratio,
+      corr_ratio: corr_ratio,
     };
 
     setResultArray([...resultArray, aresult]);

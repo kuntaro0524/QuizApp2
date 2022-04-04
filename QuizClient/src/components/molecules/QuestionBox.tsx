@@ -33,16 +33,17 @@ type Props = {
   isFilter: boolean;
   filter_ratio: number;
   subject: string;
+  quizMatchID: string;
 };
 
 export const QuestionBox = (props: Props) => {
   const { quizArray, setQuizArray, updateDB, selectRandomQuizes, selQuizArray } = useQuiz();
   const { resultArray, setResultArray, useResult } = useCycleResult();
-  const { isFilter, filter_ratio, subject } = props;
+  const { isFilter, filter_ratio, subject, quizMatchID } = props;
   const { selectedUser } = useUser();
   const { showMessage } = useMessage();
 
-  console.log("Top of QuestionBox: SUBJECT=" + subject);
+  // console.log("Top of QuestionBox: SUBJECT=" + subject);
   const navigate = useNavigate();
 
   const {
@@ -116,6 +117,31 @@ export const QuestionBox = (props: Props) => {
     console.log(quizArray);
   };
 
+  const checkResult = (currentQ: QuizInfo) => {
+    console.log("このクイズについて結果を評価します");
+
+    // 回答数を保存されている配列から調査し、今回の結果を追加してアップデートする
+    // 現在のクイズIDと整合する過去の結果を抜き出す
+    let filter_result = resultArray.filter((elem) => elem.q_id === currentQ._id);
+    let ncorr = 0;
+    let ntrial = 0;
+
+    // これまでの回答数＋１がこの問題を含めた回答数＝サイクル数
+    ntrial = filter_result.length + 1;
+    // 正答数を数える
+    // これまでの分＋今回の分
+    let corr_result = filter_result.filter((elem) => elem.isCorrect === true);
+
+    if (isCorrect) {
+      ncorr = corr_result.length + 1;
+    } else {
+      ncorr = corr_result.length;
+    }
+    // 正答率の計算 (%)
+    let corr_ratio = ncorr / ntrial * 100.0;
+    return { ntrial: ntrial, ncorr: ncorr, corr_ratio: corr_ratio }
+  }
+
   // 次のクイズボタンを押したらインデックスが変わる
   const onClickNextQuestion = () => {
     console.log("Button was pushed");
@@ -166,16 +192,25 @@ export const QuestionBox = (props: Props) => {
     // データベースで見て計算しやすいようにunix timeで格納する
     const dtime = new Date().getTime() / 1000.0;
 
+    console.log("> Current result array");
+    console.log(resultArray);
+    console.log("< Current result array");
+
     // このクイズの結果を結果DBへ登録するために結果配列へ格納
+    let { ntrial, ncorr, corr_ratio } = checkResult(currQ);
+    console.log(ntrial, ncorr, corr_ratio);
+
     const aresult = {
       user: selectedUser.name,
+      quizMatchID: quizMatchID,
+      cycle: ncycle,
       subject: subject,
       q_id: quizid,
       isCorrect: isCorrect,
       datetime: dtime,
-      ntrial: new_ntry,
-      ncorr: new_ncorr,
-      corr_ratio: tmp_corr_ratio,
+      ntrial: ntrial,
+      ncorr: ncorr,
+      corr_ratio: corr_ratio,
     };
 
     setResultArray([...resultArray, aresult]);
@@ -184,11 +219,14 @@ export const QuestionBox = (props: Props) => {
     let nextIndex = qindex + 1;
     console.log(`クイズサイズ ${quizArray.length} 次 ${nextIndex}`);
 
-    // もしもすべてのクイズが終わったら
+    // もしもこのサイクルが終わったら
     if (quizArray.length === nextIndex) {
-      console.log("next index is reset to 0.");
+      console.log("One cycle was finished.");
+      console.log("The quiz index is reset to 0.");
       nextIndex = 0;
+      // サイクル数をインクリメント
       setCycle(ncycle + 1);
+      // Quizインデックスを０にする
       setQindex(0);
       // ここでフィルターフラグがあればフィルターしてしまう;
       filterQuizes(filter_ratio);

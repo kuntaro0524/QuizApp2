@@ -9,7 +9,7 @@ type Props = {
 export const useMyImage = () => {
   const displayJudgeImage = (props: Props) => {
     const { isCorrect, isAnswered } = props;
-    console.log("Current " + isCorrect);
+    // console.log("Current " + isCorrect);
 
     let judge_comment = "";
 

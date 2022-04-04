@@ -33,11 +33,12 @@ type Props = {
   category: string;
   isCat: boolean;
   nQuestion: number;
+  quizMatchID: string;
 };
 
 export const QuizLayout = (props: Props) => {
   // 引数からパラメータを受け取って格納
-  const { subject, start_page, end_page, category, isCat, nQuestion } = props;
+  const { subject, start_page, end_page, category, isCat, nQuestion, quizMatchID } = props;
   // axiosを利用してクイズをすべて読み込んでいる
   // recoilを利用して quizState.js で設定したグローバル変数と関数へアクセス
   const { quizArray, setQuizArray, useDBs, isRead, qNum, selQuizArray } = useQuiz();
@@ -108,6 +109,7 @@ export const QuizLayout = (props: Props) => {
         isFilter={isFilter}
         filter_ratio={thresh}
         subject={subject}
+        quizMatchID={quizMatchID}
       />
     </>
   );

@@ -22,6 +22,23 @@ export const QuizSelection = () => {
   let category = searchParams.get("category")!;
   let nQuestion = parseInt(searchParams.get("nQuestion")!);
   let tmpIsCat = searchParams.get("isCat")!;
+
+  const zeropad = (rec_str: Number) => {
+    var tmp_str = rec_str.toString().padStart(2, "0")
+    return tmp_str
+  }
+
+  // クイズマッチIDをここで作成してしまう
+  var today = new Date();
+  var year = today.getFullYear();
+  var month = today.getMonth() + 1;
+  var day = today.getDate();
+  var hours = today.getHours();
+  var mins = today.getMinutes();
+  // おそらく分のオーダーまで見ていたらクイズマッチは個別のものになるだろう
+  let quizMatchID = `${username}_${subject}_${year}${zeropad(month)}${zeropad(day)}${zeropad(hours)}${zeropad(mins)}`
+  console.log("Quiz match ID=" + quizMatchID);
+
   if (tmpIsCat.includes("true")) {
     isCat = true;
   }
@@ -37,6 +54,7 @@ export const QuizSelection = () => {
         end_page={end_page}
         isCat={isCat}
         nQuestion={nQuestion}
+        quizMatchID={quizMatchID}
       />
     </>
   );

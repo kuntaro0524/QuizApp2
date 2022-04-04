@@ -29,21 +29,6 @@ type Props = {
   username: string;
 };
 
-const pages = [
-  {
-    user: "kuntaro",
-    quizes: [{ title: "教科書問題", link: "/english" }],
-  },
-  {
-    user: "ibuki",
-    quizes: [
-      { title: "教科書問題", link: "/english" },
-      { title: "パパ問題１", link: "/english_papa" },
-      { title: "ワークの問題", link: "/english_woSelectErk" },
-    ],
-  },
-];
-
 export const SelectQuizPages: VFC<Props> = (props) => {
   // どういう問題選定にするかのフラグ
   let [subject, setSubject] = useState("");
@@ -86,11 +71,6 @@ export const SelectQuizPages: VFC<Props> = (props) => {
   const { username } = props;
   console.log(`あなたは${username}さんですね`);
 
-  //   pagesに含まれているものからこのユーザが選択できるページを出し分ける
-  const user_contents = pages.filter((page) => page.user === username)[0];
-  const quizlist = user_contents.quizes;
-  console.log(quizlist);
-
   const onChangeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const designated_subject = e.target.value;
     getHowToSelect(designated_subject);
@@ -98,6 +78,8 @@ export const SelectQuizPages: VFC<Props> = (props) => {
 
   const onClickGen = () => {
     console.log("Generate button was pushed.");
+    // ここで今回やるクイズのリストを作る。
+    // すでに/quiz に対してRouteは設定してあるのでクエリパラメタでクイズ選定に必要なパラメータを渡している
     navigate(
       `/quiz?username=${username}&subject=${subject}&start_page=${startPage}&end_page=${endPage}&category=papa&isCat=${isCat}&nQuestion=${nQuestion}`
     );

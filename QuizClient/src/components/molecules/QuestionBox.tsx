@@ -86,6 +86,8 @@ export const QuestionBox = (props: Props) => {
 
   // 結果を表示するかどうかのリスト
   let passed_quizes: string[] = [];
+  console.log("Passed quizes");
+  console.log(passed_quizes);
 
   const onClickCheckAnswer = () => {
     // この問題の答え
@@ -299,6 +301,7 @@ export const QuestionBox = (props: Props) => {
 
     // クイズのインデックスをインクリメント
     let nextIndex = qindex + 1;
+
     console.log(`クイズサイズ ${quizArray.length} 次 ${nextIndex}`);
 
     // もしもこのサイクルが終わったら
@@ -322,6 +325,7 @@ export const QuestionBox = (props: Props) => {
       console.log("One cycle was finished.");
       console.log("The quiz index is reset to 0.");
       nextIndex = 0;
+
       // サイクル数をインクリメント
       setCycle(ncycle + 1);
       // Quizインデックスを０にする
@@ -337,6 +341,8 @@ export const QuestionBox = (props: Props) => {
     console.log(`サイクル数 ${ncycle}`);
     console.log(`今までにやった問題数 ${ntrial_total}`);
     console.log(quizArray);
+
+    // クイズ配列を編集してみる
 
     setIsAnswered(false);
     setIsCorrect(false);

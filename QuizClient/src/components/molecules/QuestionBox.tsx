@@ -29,6 +29,7 @@ import { useCycleResult } from "../hooks/useCycleResult";
 import { useUser } from "../hooks/useUser";
 import { useNavigate } from "react-router-dom";
 import { ResultInfo } from "../types/api/cycleresultinfo";
+import { filter } from "lodash";
 
 type Props = {
   isFilter: boolean;
@@ -86,8 +87,6 @@ export const QuestionBox = (props: Props) => {
 
   // 結果を表示するかどうかのリスト
   let passed_quizes: string[] = [];
-  console.log("Passed quizes");
-  console.log(passed_quizes);
 
   const onClickCheckAnswer = () => {
     // この問題の答え
@@ -115,17 +114,21 @@ export const QuestionBox = (props: Props) => {
     navigate(`/results?username=${selectedUser.name}&subject=${subject}`);
   };
 
-  const filterQuizes = (corr_threshold: number) => {
-    console.log(`Filtered!! ${corr_threshold}`);
+  const filterQuizes = () => {
+    console.log(`Filtered!! ${filter_ratio}`);
     const filtered_quiz = quizArray.filter(function (quiz) {
-      console.log(quiz.corr_ratio);
-      return quiz.ntrial < 2 || quiz.corr_ratio < corr_threshold;
-      // return quiz.corr_ratio < corr_threshold;
+      // これまでに合格したリストに乗っていないものを選択する
+      return !passed_quizes.includes(quiz._id);
     });
-    console.log("<<<< before >>>>>");
-    console.log(quizArray);
-    console.log("<<<< after >>>>>");
-    setQuizArray(filtered_quiz);
+    // もしも合格したリストに
+    if (filtered_quiz.length != 0) {
+      console.log("<<<< before >>>>>");
+      console.log(quizArray);
+      console.log("<<<< after >>>>>");
+      setQuizArray(filtered_quiz);
+    } else {
+      setQuizArray([]);
+    }
     console.log(quizArray);
   };
 
@@ -331,7 +334,7 @@ export const QuestionBox = (props: Props) => {
       // Quizインデックスを０にする
       setQindex(0);
       // ここでフィルターフラグがあればフィルターしてしまう;
-      // filterQuizes(filter_ratio);
+      filterQuizes();
       updateDB({ subject: subject });
     } else {
       // 今回何問問題をやっているか

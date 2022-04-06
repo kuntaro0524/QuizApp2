@@ -184,6 +184,9 @@ export const QuestionBox = (props: Props) => {
         (elem2) => elem2.q_id === target_id
       );
 
+      // 比較関数：オブジェクトの配列のソートに利用する
+      // a,b のメンバ変数である datetime によりソートをする
+      // 数値が大きい順に並べたいので大きいときに -1 を返すようにした
       function compare(a: ResultInfo, b: ResultInfo) {
         let rtn_value = 0;
         if (a.datetime > b.datetime) {

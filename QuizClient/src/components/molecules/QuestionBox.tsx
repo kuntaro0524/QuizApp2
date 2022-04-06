@@ -84,6 +84,9 @@ export const QuestionBox = (props: Props) => {
   // このときの問題文
   let currQ = quizArray[qindex];
 
+  // 結果を表示するかどうかのリスト
+  let passed_quizes: string[] = [];
+
   const onClickCheckAnswer = () => {
     // この問題の答え
     let correctAnswer = currQ.answer;
@@ -161,8 +164,8 @@ export const QuestionBox = (props: Props) => {
   // つまり、つねに最後の問題について検討されないので困る。
   // 結果を表示するときに再レンダリングはされるのでそのときにリストも更新するなどしたほうが良い？
   const checkCurrentResult = (props: PPProps) => {
-    // まだ回答しなければいけないクイズID
-    let left_quizes: string[] = [];
+    // すでに合格したものを登録していく方式をとる
+    let passed_results_local: string[] = [];
     // 調査したことがあるかどうかのフラグ的な配列
     let checked_list: string[] = [];
     const { currResultArray } = props;
@@ -197,22 +200,27 @@ export const QuestionBox = (props: Props) => {
         return rtn_value;
       }
 
+      // 日付でソートしたデータ：最新版が一番上にくる
+      // ここでは「あるクイズID」についての結果で最新版だけを取得している
       let latest_result = duplicated_results.sort(compare)[0];
       if (latest_result != null) {
+        // チェックリストにこのクイズIDを入れておく：以降調査をしない
         checked_list.push(latest_result.q_id);
         console.log(
           `ID=${latest_result.q_id} Correction ratio=${latest_result.corr_ratio}`
         );
 
         // 最新の結果に記載してある正答率によってフィルタをかけるようにする
-        if (latest_result.corr_ratio < 75.0) {
-          left_quizes.push(latest_result.q_id);
+        // 合格したものを登録するという仕様に切り替え→初期配列をなしにするほうが簡単なので
+        if (latest_result.corr_ratio >= filter_ratio) {
+          passed_results_local.push(latest_result.q_id);
         }
       }
     });
-    console.log(left_quizes);
+    console.log("すでに合格した結果");
+    console.log(passed_results_local);
 
-    return left_quizes;
+    return passed_results_local;
   };
 
   // 次のクイズボタンを押したらインデックスが変わる
@@ -295,11 +303,19 @@ export const QuestionBox = (props: Props) => {
 
     // もしもこのサイクルが終わったら
     if (quizArray.length === nextIndex) {
-      let cycleResults = checkCurrentResult({
+      // これまでの回答リストを評価して「正答率によって」残すクイズを選択する
+      // 具体的には正答率がしきい値未満のものだけを残している
+      // この配列は出題のときのセレクションとして利用したい
+      // なんでこんなことしているかっていうと useState で Contextで管理している
+      // クイズリストを「切ったりはったりする」ことがままならないから
+      // ままならない＝操作をしても更新のタイミングでしか配列の変更が適用されないので
+      // 思ったような挙動にならないことが原因
+      // 根本的な解決ができたらこれもなくしたら良いと思う
+      passed_quizes = checkCurrentResult({
         currResultArray: new_result_array,
       });
-      if (cycleResults.length == 0) {
-        const title = "すべての問題を完了しました！！！";
+      if (passed_quizes.length == quizArray.length) {
+        const title = "すべての問題を完了しました!!!";
         const status = "success";
         showMessage({ title, status });
       }

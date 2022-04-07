@@ -66,6 +66,7 @@ app.get("/user", function (req, res) {
 const result_schema = {
   user: String,
   quizMatchID: String,
+  cycle: Number,
   subject: String,
   q_id: String,
   isCorrect: Boolean,

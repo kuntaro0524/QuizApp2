@@ -21,8 +21,8 @@ import {
 import { ChangeEvent, useState, VFC } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setConstantValue } from "typescript";
-import { QuizSelection } from "../atoms/QuizSelection";
 import { useQuiz } from "../hooks/useQuiz";
+
 // import { PageSelection } from "../atoms/PageSelection";
 
 type Props = {
@@ -46,7 +46,7 @@ export const SelectQuizPages: VFC<Props> = (props) => {
 
   const howto_select = [
     { subject: "english", sele_method: "category" },
-    { subject: "social", sele_method: "page" },
+    { subject: "shakai", sele_method: "page" },
     { subject: "science", sele_method: "page" },
   ];
 
@@ -99,7 +99,7 @@ export const SelectQuizPages: VFC<Props> = (props) => {
             bg={"teal.200"}
             onChange={onChangeSelect}
           >
-            <option value="social">社会</option>
+            <option value="shakai">社会</option>
             <option value="english">英語</option>
             <option value="science">理科</option>
           </Select>

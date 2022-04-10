@@ -187,11 +187,6 @@ export const useQuiz = () => {
               status: "error",
             });
           } else {
-            filtered_quiz = res.data.filter(
-              (quiz) =>
-                quiz.page >= start_page &&
-                quiz.page <= end_page
-            );
             if (filtered_quiz.length === 0) {
               showMessage({
                 title: "フィルター後のクイズがないよ",

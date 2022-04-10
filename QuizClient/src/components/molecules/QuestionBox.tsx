@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, memo, useEffect, useMemo, useState } from "react";
 import {
   AspectRatio,
   Box,
@@ -229,7 +229,7 @@ export const QuestionBox = (props: Props) => {
   };
 
   // 次のクイズボタンを押したらインデックスが変わる
-  const onClickNextQuestion = () => {
+  const useClickNextQuestion = () => {
     console.log("Button was pushed");
     console.log("Correct Flag=" + isCorrect);
 
@@ -324,6 +324,12 @@ export const QuestionBox = (props: Props) => {
         const title = "すべての問題を完了しました!!!";
         const status = "success";
         showMessage({ title, status });
+
+        useResult({
+          username: selectedUser.name,
+          subject: subject,
+          category: "test",
+        });
       }
       console.log("One cycle was finished.");
       console.log("The quiz index is reset to 0.");
@@ -336,12 +342,6 @@ export const QuestionBox = (props: Props) => {
       // ここでフィルターフラグがあればフィルターしてしまう;
       filterQuizes();
       updateDB({ subject: subject });
-      // ここまでの結果をDBへ登録する
-      useResult({
-        username: selectedUser.name,
-        subject: subject,
-        category: "test",
-      });
     } else {
       // 今回何問問題をやっているか
       setQindex(qindex + 1);
@@ -397,7 +397,7 @@ export const QuestionBox = (props: Props) => {
                 <MyButton onClick={onClickCheckAnswer} colorScheme="teal">
                   Check the answer
                 </MyButton>
-                <MyButton onClick={onClickNextQuestion} colorScheme="blue">
+                <MyButton onClick={useClickNextQuestion} colorScheme="blue">
                   Next question.
                 </MyButton>
                 <MyButton onClick={useClickEnd} colorScheme="red">

@@ -36,6 +36,7 @@ export const SelectQuizPages: VFC<Props> = (props) => {
   let [isCat, setIsCat] = useState(false);
   let [startPage, setStartPage] = useState(0);
   let [endPage, setEndPage] = useState(999999);
+  let [category, setCategory] = useState("");
   // 問題数を限定するためのフックス
   let [nQuestion, setNquestion] = useState(10);
 
@@ -50,6 +51,7 @@ export const SelectQuizPages: VFC<Props> = (props) => {
     { subject: "science", sele_method: "page" },
   ];
 
+  // 教科を選択したらカテゴリー主体かページ主体かを選択できる
   const getHowToSelect = (subject_name: string) => {
     let result = howto_select.filter(
       (item) => item.subject === subject_name
@@ -76,12 +78,17 @@ export const SelectQuizPages: VFC<Props> = (props) => {
     getHowToSelect(designated_subject);
   };
 
+  const onChangeSelectCat = (e: ChangeEvent<HTMLSelectElement>) => {
+    const category = e.target.value;
+    setCategory(category);
+  };
+
   const onClickGen = () => {
     console.log("Generate button was pushed.");
     // ここで今回やるクイズのリストを作る。
     // すでに/quiz に対してRouteは設定してあるのでクエリパラメタでクイズ選定に必要なパラメータを渡している
     navigate(
-      `/quiz?username=${username}&subject=${subject}&start_page=${startPage}&end_page=${endPage}&category=papa&isCat=${isCat}&nQuestion=${nQuestion}`
+      `/quiz?username=${username}&subject=${subject}&start_page=${startPage}&end_page=${endPage}&category=${category}&isCat=${isCat}&nQuestion=${nQuestion}`
     );
   };
 
@@ -103,6 +110,21 @@ export const SelectQuizPages: VFC<Props> = (props) => {
             <option value="english">英語</option>
             <option value="science">理科</option>
           </Select>
+          <Box color="blue">
+            {isCat ?
+              <Select
+                textAlign="center"
+                fontSize={"25px"}
+                width="250px"
+                color="black"
+                placeholder="Select option"
+                bg={"teal.200"}
+                onChange={onChangeSelectCat}
+              >
+                <option value="textbook">教科書</option>
+                <option value="papa">papa</option>
+              </Select> : null}
+          </Box>
           <Box color={"green"}>
             {isPage ? (
               <Flex>

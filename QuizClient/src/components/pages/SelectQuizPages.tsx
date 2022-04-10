@@ -21,11 +21,7 @@ import {
 import { ChangeEvent, useState, VFC } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setConstantValue } from "typescript";
-<<<<<<< HEAD
-=======
-import { QuizSelection } from "../atoms/QuizSelection";
 import { useMessage } from "../hooks/useMessage";
->>>>>>> origin/main
 import { useQuiz } from "../hooks/useQuiz";
 
 // import { PageSelection } from "../atoms/PageSelection";
@@ -42,13 +38,9 @@ export const SelectQuizPages: VFC<Props> = (props) => {
   let [isCat, setIsCat] = useState(false);
   let [startPage, setStartPage] = useState(0);
   let [endPage, setEndPage] = useState(999999);
-<<<<<<< HEAD
-  let [category, setCategory] = useState("");
-=======
   let [categories, setCategories] = useState<Array<string>>([]);
   // 最終的なカテゴリ
   let [category, setCategory] = useState<string>("");
->>>>>>> origin/main
   // 問題数を限定するためのフックス
   let [nQuestion, setNquestion] = useState(10);
 
@@ -60,15 +52,9 @@ export const SelectQuizPages: VFC<Props> = (props) => {
   const { selectRandomQuizes } = useQuiz();
 
   const howto_select = [
-<<<<<<< HEAD
-    { subject: "english", sele_method: "category" },
-    { subject: "shakai", sele_method: "page" },
-    { subject: "science", sele_method: "page" },
-=======
     { subject: "english", categories: ["papa", "textbook"] },
     { subject: "shakai", categories: ["jiyujizai", "correction"] },
     { subject: "science", categories: ["jiyujizai", "correction"] },
->>>>>>> origin/main
   ];
 
   // 教科を選択したらカテゴリー主体かページ主体かを選択できる
@@ -135,23 +121,7 @@ export const SelectQuizPages: VFC<Props> = (props) => {
             <option value="english">英語</option>
             <option value="science">理科</option>
           </Select>
-<<<<<<< HEAD
-          <Box color="blue">
-            {isCat ?
-              <Select
-                textAlign="center"
-                fontSize={"25px"}
-                width="250px"
-                color="black"
-                placeholder="Select option"
-                bg={"teal.200"}
-                onChange={onChangeSelectCat}
-              >
-                <option value="textbook">教科書</option>
-                <option value="papa">papa</option>
-              </Select> : null}
-          </Box>
-=======
+          test
           <Select
             textAlign="center"
             fontSize={"25px"}
@@ -165,7 +135,6 @@ export const SelectQuizPages: VFC<Props> = (props) => {
               <option key={index} value={cat}> {cat} </option>)
             )}
           </Select>
->>>>>>> origin/main
           <Box color={"green"}>
             <Flex>
               <Text m={3}>ページを選択</Text>
@@ -215,8 +184,8 @@ export const SelectQuizPages: VFC<Props> = (props) => {
           <Button colorScheme={"teal"} onClick={onClickGen}>
             問題を作成する
           </Button>
-        </Box>
-      </VStack>
+        </Box >
+      </VStack >
     </Flex >
   );
 };

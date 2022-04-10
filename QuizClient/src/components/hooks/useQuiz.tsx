@@ -158,7 +158,6 @@ export const useQuiz = () => {
     console.log("end_page:" + end_page);
     console.log("subject:" + subject);
     console.log("category:" + category);
-    console.log("isCat:" + isCat);
     console.log("nQuestion:" + nQuestion);
     console.log("++++useDBs was called.+++++");
 
@@ -188,7 +187,6 @@ export const useQuiz = () => {
               status: "error",
             });
           } else {
-<<<<<<< HEAD
             filtered_quiz = res.data.filter(
               (quiz) =>
                 quiz.page >= start_page &&
@@ -207,11 +205,6 @@ export const useQuiz = () => {
               filtered_quiz = [...new_array];
               console.log("New selected quiz length=" + new_array.length);
             }
-=======
-            const new_array = selectRandomQuizes({ nQuizes: nQuestion, qArray: filtered_quiz });
-            filtered_quiz = [...new_array];
-            console.log("New selected quiz length=" + new_array.length);
->>>>>>> origin/main
           }
 
           // さらにランダムに指定数だけクイズをせんたくする

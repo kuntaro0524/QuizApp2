@@ -144,12 +144,11 @@ export const useQuiz = () => {
     start_page: number;
     end_page: number;
     category: string;
-    isCat: boolean /* カテゴリを設定するかどうか */;
     nQuestion: number;
   };
 
   const useDBs = (props: Props) => {
-    const { start_page, end_page, subject, category, isCat, nQuestion } = props;
+    const { start_page, end_page, subject, category, nQuestion } = props;
     const { showMessage } = useMessage();
 
     useEffect(() => {
@@ -167,29 +166,23 @@ export const useQuiz = () => {
           console.log(res.data);
           // カテゴリによる選定の場合
           let filtered_quiz = null;
-          if (isCat) {
-            filtered_quiz = res.data.filter(
-              (quiz) =>
-                quiz.page >= start_page &&
-                quiz.page <= end_page &&
-                quiz.category === category
-            );
-            console.log("<<<< useDBs after >>>>>" + filtered_quiz.length);
-            if (filtered_quiz.length === 0) {
-              showMessage({
-                title: "フィルター後のクイズがないよ",
-                status: "error",
-              });
-            } else {
-              const new_array = selectRandomQuizes({ nQuizes: nQuestion, qArray: filtered_quiz });
-              filtered_quiz = [...new_array];
-              console.log("New selected quiz length=" + new_array.length);
-            }
+          filtered_quiz = res.data.filter(
+            (quiz) =>
+              quiz.page >= start_page &&
+              quiz.page <= end_page &&
+              quiz.category === category
+          );
+          console.log("<<<< useDBs after >>>>>" + filtered_quiz.length);
+          if (filtered_quiz.length === 0) {
+            showMessage({
+              title: "フィルター後のクイズがないよ",
+              status: "error",
+            });
           } else {
-            // カテゴリによる選定ではない場合
-            filtered_quiz = [...res.data];
+            const new_array = selectRandomQuizes({ nQuizes: nQuestion, qArray: filtered_quiz });
+            filtered_quiz = [...new_array];
+            console.log("New selected quiz length=" + new_array.length);
           }
-          console.log(filtered_quiz);
 
           // さらにランダムに指定数だけクイズをせんたくする
           setQuizArray(filtered_quiz);

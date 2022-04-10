@@ -22,6 +22,7 @@ import { ChangeEvent, useState, VFC } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setConstantValue } from "typescript";
 import { QuizSelection } from "../atoms/QuizSelection";
+import { useMessage } from "../hooks/useMessage";
 import { useQuiz } from "../hooks/useQuiz";
 // import { PageSelection } from "../atoms/PageSelection";
 
@@ -48,21 +49,27 @@ export const SelectQuizPages: VFC<Props> = (props) => {
   // どういう問題選定にするかのフラグ
   let [subject, setSubject] = useState("");
   let [isPage, setIsPage] = useState(false);
+  // isCatというのをなくする必要がある
   let [isCat, setIsCat] = useState(false);
   let [startPage, setStartPage] = useState(0);
   let [endPage, setEndPage] = useState(999999);
+  let [categories, setCategories] = useState<Array<string>>([]);
+  // 最終的なカテゴリ
+  let [category, setCategory] = useState<string>("");
   // 問題数を限定するためのフックス
   let [nQuestion, setNquestion] = useState(10);
 
   // ボタンを押してリンク先へ移動したい
   const navigate = useNavigate();
+  // メッセージ表示用のフックス
+  const { showMessage } = useMessage();
 
   const { selectRandomQuizes } = useQuiz();
 
   const howto_select = [
-    { subject: "english", sele_method: "category" },
-    { subject: "social", sele_method: "page" },
-    { subject: "science", sele_method: "page" },
+    { subject: "english", categories: ["papa", "textbook"] },
+    { subject: "shakai", categories: ["jiyujizai", "correction"] },
+    { subject: "science", categories: ["jiyujizai", "correction"] },
   ];
 
   const getHowToSelect = (subject_name: string) => {
@@ -71,16 +78,8 @@ export const SelectQuizPages: VFC<Props> = (props) => {
     )[0];
     // 教科をフックスに登録
     setSubject(result.subject);
-    console.log("選ばれたのは" + result.sele_method);
-    if (result.sele_method === "category") {
-      setIsCat(true);
-      setIsPage(false);
-    }
-    if (result.sele_method === "page") {
-      setIsPage(true);
-      setIsCat(false);
-    }
-    return result.sele_method;
+    setCategories(result.categories);
+    return true;
   };
 
   const { username } = props;
@@ -94,12 +93,25 @@ export const SelectQuizPages: VFC<Props> = (props) => {
   const onChangeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const designated_subject = e.target.value;
     getHowToSelect(designated_subject);
+    console.log(subject);
+
+    if (subject === "english") {
+      showMessage({ title: "英語のときはページ数関係ないからね", status: "success" });
+    }
+  };
+
+  const onChangeCategory = (e: ChangeEvent<HTMLSelectElement>) => {
+    if (subject === "") {
+      alert("最初に教科を選択してください")
+      return
+    }
+    setCategory(e.target.value);
   };
 
   const onClickGen = () => {
     console.log("Generate button was pushed.");
     navigate(
-      `/quiz?username=${username}&subject=${subject}&start_page=${startPage}&end_page=${endPage}&category=papa&isCat=${isCat}&nQuestion=${nQuestion}`
+      `/quiz?username=${username}&subject=${subject}&start_page=${startPage}&end_page=${endPage}&category=${category}&isCat=${isCat}&nQuestion=${nQuestion}`
     );
   };
 
@@ -117,39 +129,50 @@ export const SelectQuizPages: VFC<Props> = (props) => {
             bg={"teal.200"}
             onChange={onChangeSelect}
           >
-            <option value="social">社会</option>
+            <option value="shakai">社会</option>
             <option value="english">英語</option>
             <option value="science">理科</option>
           </Select>
+          <Select
+            textAlign="center"
+            fontSize={"25px"}
+            width="250px"
+            color="black"
+            placeholder="カテゴリを選択しましょう"
+            bg={"teal.200"}
+            onChange={onChangeCategory}
+          >
+            {categories.map((cat, index) => (
+              <option key={index} value={cat}> {cat} </option>)
+            )}
+          </Select>
           <Box color={"green"}>
-            {isPage ? (
-              <Flex>
-                <Text>ページを選択</Text>
-                <NumberInput
-                  width={"150px"}
-                  onChange={(valueString) =>
-                    setStartPage(parseInt(valueString))
-                  }
-                  value={startPage}
-                  defaultValue={1}
-                  min={1}
-                  max={600}
-                >
-                  <NumberInputField />
-                </NumberInput>
-                <Text>To</Text>
-                <NumberInput
-                  width={"150px"}
-                  value={endPage}
-                  onChange={(valueString) => setEndPage(parseInt(valueString))}
-                  defaultValue={100}
-                  min={1}
-                  max={600}
-                >
-                  <NumberInputField />
-                </NumberInput>
-              </Flex>
-            ) : null}
+            <Flex>
+              <Text m={3}>ページを選択</Text>
+              <NumberInput m={3}
+                width={"150px"}
+                onChange={(valueString) =>
+                  setStartPage(parseInt(valueString))
+                }
+                value={startPage}
+                defaultValue={1}
+                min={1}
+                max={600}
+              >
+                <NumberInputField />
+              </NumberInput>
+              <Text>To</Text>
+              <NumberInput
+                width={"150px"}
+                value={endPage}
+                onChange={(valueString) => setEndPage(parseInt(valueString))}
+                defaultValue={100}
+                min={1}
+                max={600}
+              >
+                <NumberInputField />
+              </NumberInput>
+            </Flex>
           </Box>
           <Flex>
             <Text color="blue">問題数を限定する</Text>
@@ -174,6 +197,6 @@ export const SelectQuizPages: VFC<Props> = (props) => {
           </Button>
         </Box>
       </VStack>
-    </Flex>
+    </Flex >
   );
 };

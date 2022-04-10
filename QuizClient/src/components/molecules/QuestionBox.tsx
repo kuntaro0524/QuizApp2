@@ -336,6 +336,12 @@ export const QuestionBox = (props: Props) => {
       // ここでフィルターフラグがあればフィルターしてしまう;
       filterQuizes();
       updateDB({ subject: subject });
+      // ここまでの結果をDBへ登録する
+      useResult({
+        username: selectedUser.name,
+        subject: subject,
+        category: "test",
+      });
     } else {
       // 今回何問問題をやっているか
       setQindex(qindex + 1);

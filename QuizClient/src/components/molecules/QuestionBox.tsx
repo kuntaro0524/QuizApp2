@@ -46,7 +46,7 @@ export const QuestionBox = (props: Props) => {
     selectRandomQuizes,
     selQuizArray,
   } = useQuiz();
-  const { resultArray, setResultArray, useResult } = useCycleResult();
+  const { resultArray, setResultArray } = useCycleResult();
   const { isFilter, filter_ratio, subject, quizMatchID } = props;
   const { selectedUser } = useUser();
   const { showMessage } = useMessage();
@@ -105,13 +105,8 @@ export const QuestionBox = (props: Props) => {
     console.log("PUSSSSSSSSSSSSSSSSS");
     console.log(selectedUser.name);
 
-    useResult({
-      username: selectedUser.name,
-      subject: subject,
-      category: "test",
-    });
-
-    navigate(`/results?username=${selectedUser.name}&subject=${subject}`);
+    // クイズマッチIDと教科を渡せばなんとかなりそう
+    navigate(`/results?quizmatchID=${quizMatchID}&subject=${subject}`);
   };
 
   const filterQuizes = () => {
@@ -324,12 +319,8 @@ export const QuestionBox = (props: Props) => {
         const title = "すべての問題を完了しました!!!";
         const status = "success";
         showMessage({ title, status });
-
-        useResult({
-          username: selectedUser.name,
-          subject: subject,
-          category: "test",
-        });
+        // クイズマッチIDと教科を渡せばなんとかなりそう
+        navigate(`/results?quizmatchID=${quizMatchID}&subject=${subject}`);
       }
       console.log("One cycle was finished.");
       console.log("The quiz index is reset to 0.");

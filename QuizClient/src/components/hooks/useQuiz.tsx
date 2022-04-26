@@ -150,6 +150,8 @@ export const useQuiz = () => {
   };
 
   const useDBs = (props: Props) => {
+    console.log("useDB is running from NOW!!");
+
     const { start_page, end_page, subject, category, nQuestion } = props;
     const { showMessage } = useMessage();
 

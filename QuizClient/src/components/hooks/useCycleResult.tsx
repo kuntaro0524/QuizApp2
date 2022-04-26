@@ -19,7 +19,6 @@ export const useCycleResult = () => {
     subject: string;
   }
 
-
   // resultArrayを解析していろいろとやる
   type Props2 = {
     currResultArray: ResultInfo[];
@@ -50,22 +49,9 @@ export const useCycleResult = () => {
         (elem2) => elem2.q_id === target_id
       );
 
-      // 比較関数：オブジェクトの配列のソートに利用する
-      // a,b のメンバ変数である datetime によりソートをする
-      // 数値が大きい順に並べたいので大きいときに -1 を返すようにした
-      function compare(a: ResultInfo, b: ResultInfo) {
-        let rtn_value = 0;
-        if (a.datetime > b.datetime) {
-          rtn_value = -1;
-        } else if (b.datetime > a.datetime) {
-          rtn_value = 1;
-        }
-        return rtn_value;
-      }
-
       // 日付でソートしたデータ：最新版が一番上にくる
       // ここでは「あるクイズID」についての結果で最新版だけを取得している
-      let latest_result = duplicated_results.sort(compare)[0];
+      let latest_result = duplicated_results.sort(compareTime)[0];
       if (latest_result != null) {
         // チェックリストにこのクイズIDを入れておく：以降調査をしない
         checked_list.push(latest_result.q_id);
@@ -86,9 +72,25 @@ export const useCycleResult = () => {
     return passed_results_local;
   };
 
+  // 受け取った ResultInfoに含まれる時間を比較してソートする比較関数
+  // 比較関数：オブジェクトの配列のソートに利用する
+  // a,b のメンバ変数である datetime によりソートをする
+  // 数値が大きい順に並べたいので大きいときに -1 を返すようにした
+  function compareTime(a: ResultInfo, b: ResultInfo) {
+    let rtn_value = 0;
+    if (a.datetime > b.datetime) {
+      rtn_value = -1;
+    } else if (b.datetime > a.datetime) {
+      rtn_value = 1;
+    }
+    return rtn_value;
+  }
+
   const getLatestResult = (props: Props2) => {
     let passed_results_local = checkCurrentResult(props)
+    console.log("*************************************8");
     console.log(passed_results_local);
+    console.log("*************************************8");
   }
 
   // 単純に配列を登録している

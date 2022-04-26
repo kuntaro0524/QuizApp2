@@ -46,7 +46,7 @@ export const QuestionBox = (props: Props) => {
     selectRandomQuizes,
     selQuizArray,
   } = useQuiz();
-  const { resultArray, setResultArray } = useCycleResult();
+  const { resultArray, setResultArray, checkCurrentResult } = useCycleResult();
   const { isFilter, filter_ratio, subject, quizMatchID } = props;
   const { selectedUser } = useUser();
   const { showMessage } = useMessage();
@@ -158,71 +158,6 @@ export const QuestionBox = (props: Props) => {
     currResultArray: ResultInfo[];
   };
 
-  // ちょっとした問題（2022/04/04）
-  // resultArrayを利用するのにもページが更新されないと配列も更新されないため、
-  // これまでの結果を評価して次のクイズリストを作成するときに問題になる
-  // つまり、つねに最後の問題について検討されないので困る。
-  // 結果を表示するときに再レンダリングはされるのでそのときにリストも更新するなどしたほうが良い？
-  const checkCurrentResult = (props: PPProps) => {
-    // すでに合格したものを登録していく方式をとる
-    let passed_results_local: string[] = [];
-    // 調査したことがあるかどうかのフラグ的な配列
-    let checked_list: string[] = [];
-    const { currResultArray } = props;
-    console.log("Current length of results=" + currResultArray);
-
-    currResultArray.forEach((elem) => {
-      // 検討を進めている結果のIDについて
-      let target_id = elem.q_id;
-      console.log("検討しているTargetIDです" + target_id);
-
-      // これまでにチェックしたリストに入っていたら見ない
-      if (checked_list.includes(target_id)) {
-        console.log("すでに検討しました。スキップします");
-        // return って関数を終えるものではないのか。危ない
-        return;
-      }
-      // これまでチェックリストに入っていないかどうかを確認する
-      let duplicated_results = currResultArray.filter(
-        (elem2) => elem2.q_id === target_id
-      );
-
-      // 比較関数：オブジェクトの配列のソートに利用する
-      // a,b のメンバ変数である datetime によりソートをする
-      // 数値が大きい順に並べたいので大きいときに -1 を返すようにした
-      function compare(a: ResultInfo, b: ResultInfo) {
-        let rtn_value = 0;
-        if (a.datetime > b.datetime) {
-          rtn_value = -1;
-        } else if (b.datetime > a.datetime) {
-          rtn_value = 1;
-        }
-        return rtn_value;
-      }
-
-      // 日付でソートしたデータ：最新版が一番上にくる
-      // ここでは「あるクイズID」についての結果で最新版だけを取得している
-      let latest_result = duplicated_results.sort(compare)[0];
-      if (latest_result != null) {
-        // チェックリストにこのクイズIDを入れておく：以降調査をしない
-        checked_list.push(latest_result.q_id);
-        console.log(
-          `ID=${latest_result.q_id} Correction ratio=${latest_result.corr_ratio}`
-        );
-
-        // 最新の結果に記載してある正答率によってフィルタをかけるようにする
-        // 合格したものを登録するという仕様に切り替え→初期配列をなしにするほうが簡単なので
-        if (latest_result.corr_ratio >= filter_ratio) {
-          passed_results_local.push(latest_result.q_id);
-        }
-      }
-    });
-    console.log("すでに合格した結果");
-    console.log(passed_results_local);
-
-    return passed_results_local;
-  };
-
   // 次のクイズボタンを押したらインデックスが変わる
   const useClickNextQuestion = () => {
     console.log("Button was pushed");
@@ -314,7 +249,12 @@ export const QuestionBox = (props: Props) => {
       // 根本的な解決ができたらこれもなくしたら良いと思う
       passed_quizes = checkCurrentResult({
         currResultArray: new_result_array,
+        filterRatio: filter_ratio
       });
+
+      console.log(passed_quizes.length);
+      console.log(quizArray.length);
+
       if (passed_quizes.length == quizArray.length) {
         const title = "すべての問題を完了しました!!!";
         const status = "success";

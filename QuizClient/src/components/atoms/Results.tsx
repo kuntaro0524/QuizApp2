@@ -47,7 +47,7 @@ export const Results = () => {
 
     // 現在からの乖離時間を計算（単位は hours)
     const diff_hours = (todayNow - time_on_db) / 1000.0 / 3600.0;
-    console.log(diff_hours);
+    console.log("DiffTime=" + diff_hours);
 
     if (diff_hours < 24.0) return true;
   });
@@ -58,9 +58,10 @@ export const Results = () => {
     return item.isCorrect;
   });
 
-  console.log("New function########################3");
+  // 現時点では filter ratio をきれいに受け取る方法を実装していないのでベタ書きしている
+  console.log("New function########################");
   getLatestResult({ currResultArray: resultArray, filterRatio: 0.75 });
-  console.log("New function########################3");
+  console.log("New function########################");
 
   // こなした順に結果を並べたい → カスタムフックに入れるべきなのでは
 

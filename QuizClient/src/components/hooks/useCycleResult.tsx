@@ -20,49 +20,76 @@ export const useCycleResult = () => {
   }
 
   // resultArrayを解析していろいろとやる
-  type Props2 = {
-    currResultArray: ResultInfo[];
-    filterRatio: number;
-  };
+  type Props3 = {
+    currResultArray: ResultInfo[],
+    filterRatio: number
+  }
 
-  const checkCurrentResult = (props: Props2) => {
-    // すでに合格したものを登録していく方式をとる
-    let passed_results_local: string[] = [];
+  // 現在の結果配列から重複したものを取り除く機能
+  const getFlatResult = (props: Props3) => {
     // 調査したことがあるかどうかのフラグ的な配列
     let checked_list: string[] = [];
-    const { currResultArray, filterRatio } = props;
-    console.log("Current length of results=" + currResultArray);
+    console.log("Current length of results=" + resultArray);
+
+    const { filterRatio, currResultArray } = props;
 
     currResultArray.forEach((elem) => {
       // 検討を進めている結果のIDについて
       let target_id = elem.q_id;
       console.log("検討しているTargetIDです" + target_id);
 
-      // これまでにチェックしたリストに入っていたら見ない
+      // これまでにチェックしたリストに入っていたらスキップする
       if (checked_list.includes(target_id)) {
         console.log("すでに検討しました。スキップします");
         // return って関数を終えるものではないのか。危ない
         return;
       }
-      // これまでチェックリストに入っていないかどうかを確認する
+      // 結果配列の中に同じ「クイズID」のものが含まれている場合配列を抽出
       let duplicated_results = currResultArray.filter(
         (elem2) => elem2.q_id === target_id
       );
 
-      // 日付でソートしたデータ：最新版が一番上にくる
-      // ここでは「あるクイズID」についての結果で最新版だけを取得している
-      let latest_result = duplicated_results.sort(compareTime)[0];
-      if (latest_result != null) {
+      console.log("Duplicated results");
+      console.log(duplicated_results);
+
+      if (duplicated_results.length != 0) {
+        // 登録日で結果配列をソートする
+        // ここでは「あるクイズID」についての結果で最新版だけを取得している
+        let latest_result = duplicated_results.sort(compareTime)[0];
         // チェックリストにこのクイズIDを入れておく：以降調査をしない
         checked_list.push(latest_result.q_id);
         console.log(
           `ID=${latest_result.q_id} Correction ratio=${latest_result.corr_ratio}`
         );
+      }
+    })
+    return checked_list
+  };
 
-        // 最新の結果に記載してある正答率によってフィルタをかけるようにする
-        // 合格したものを登録するという仕様に切り替え→初期配列をなしにするほうが簡単なので
-        if (latest_result.corr_ratio >= filterRatio) {
-          passed_results_local.push(latest_result.q_id);
+
+  const checkCurrentResult = (props: Props3) => {
+    const { filterRatio, currResultArray } = props;
+    // すでに合格したものを登録していく方式をとる
+    let passed_results_local: string[] = [];
+    // 調査したことがあるかどうかのフラグ的な配列
+    let checked_list: string[] = [];
+    console.log("Current length of results=" + currResultArray);
+
+    checked_list = getFlatResult({ filterRatio, currResultArray });
+
+    console.log(">>> checked_list <<<<");
+    console.log(checked_list);
+
+    checked_list.forEach((elem) => {
+      const target_qid = elem;
+      const target_result = currResultArray.find((v) => v.q_id === target_qid);
+      console.log("今調査しているのは");
+      console.log(target_result);
+      console.log("フィルターかけるよ");
+
+      if (target_result != null) {
+        if (target_result.corr_ratio >= filterRatio) {
+          passed_results_local.push(target_result.q_id);
         }
       }
     });
@@ -86,15 +113,17 @@ export const useCycleResult = () => {
     return rtn_value;
   }
 
-  const getLatestResult = (props: Props2) => {
+  const getLatestResult = (props: Props3) => {
     let passed_results_local = checkCurrentResult(props)
-    console.log("*************************************8");
     console.log(passed_results_local);
     console.log("*************************************8");
   }
 
   // 単純に配列を登録している
   const updateResult = (props: Props) => {
+    console.log("<<< updateResult >>> is running.");
+    console.log(resultArray);
+
     const { subject } = props;
     axios
       .post<Array<ResultInfo>>(
@@ -165,6 +194,6 @@ export const useCycleResult = () => {
       });
   };
 
-  return { resultArray, setResultArray, updateResult, getResult, dbResultArray, checkCurrentResult, getLatestResult }
+  return { resultArray, setResultArray, updateResult, getResult, dbResultArray, checkCurrentResult, getLatestResult, getFlatResult }
 
 }

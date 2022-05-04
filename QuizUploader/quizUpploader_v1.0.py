@@ -8,7 +8,8 @@ client = MongoClient('localhost', 27017)
 
 
 # CSVファイルを読み込んでJSONにする
-df = pd.read_csv(sys.argv[1],encoding='utf-8')
+#df = pd.read_csv(sys.argv[1],encoding='utf-8')
+df = pd.read_csv(sys.argv[1])
 # collectionの名前を定義する
 collection_name = sys.argv[2]
 

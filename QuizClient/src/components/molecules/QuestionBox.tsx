@@ -46,7 +46,7 @@ export const QuestionBox = (props: Props) => {
     selectRandomQuizes,
     selQuizArray,
   } = useQuiz();
-  const { resultArray, setResultArray, checkCurrentResult } = useCycleResult();
+  const { resultArray, setResultArray, checkCurrentResult, updateResult } = useCycleResult();
   const { isFilter, filter_ratio, subject, quizMatchID } = props;
   const { selectedUser } = useUser();
   const { showMessage } = useMessage();
@@ -259,6 +259,8 @@ export const QuestionBox = (props: Props) => {
         const title = "すべての問題を完了しました!!!";
         const status = "success";
         showMessage({ title, status });
+        // 結果をアップデートしてみる
+        updateResult({ subject });
         // クイズマッチIDと教科を渡せばなんとかなりそう
         navigate(`/results?quizmatchID=${quizMatchID}&subject=${subject}`);
       }

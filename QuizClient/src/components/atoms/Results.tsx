@@ -11,16 +11,19 @@ export const Results = () => {
   let subject: string | null = searchParams.get("subject");
 
   console.log("QuizMatchID=" + quizMatchID);
-  const { updateResult, resultArray, getResult, dbResultArray, getLatestResult } = useCycleResult();
+  const { updateResult, resultArray, getResult, dbResultArray, getLatestResult, getFlatResult } = useCycleResult();
 
   if (subject === null) { subject = ""; }
 
   const props = { subject: subject };
 
   useEffect(() => {
-    updateResult({ subject: subject! });
+    // updateResult({ subject: subject! });
     getResult({ subject: "english" });
   }, []);
+
+  console.log("################## Results component ################");
+  console.log("after updateResult -> getResult ");
 
   console.log(dbResultArray);
 
@@ -59,9 +62,10 @@ export const Results = () => {
   });
 
   // 現時点では filter ratio をきれいに受け取る方法を実装していないのでベタ書きしている
-  console.log("New function########################");
-  getLatestResult({ currResultArray: resultArray, filterRatio: 0.75 });
-  console.log("New function########################");
+  console.log(">>> New function########################");
+  // getLatestResult({ currResultArray: resultArray, filterRatio: 0.75 });
+  getFlatResult({ filterRatio: 0.75, currResultArray: resultArray });
+  console.log(">>> New function########################");
 
   // こなした順に結果を並べたい → カスタムフックに入れるべきなのでは
 

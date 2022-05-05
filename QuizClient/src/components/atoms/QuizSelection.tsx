@@ -2,7 +2,7 @@ import React from "react";
 import { ReactNode, VFC } from "react";
 import { Button } from "@chakra-ui/react";
 import { QuizLayout } from "../pages/QuizLayout";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 // 引数ではなくてURLパラメータを読むことにした
 // 期待しているURLは以下のような感じ
@@ -15,13 +15,19 @@ export const QuizSelection = () => {
   const [searchParams] = useSearchParams();
   let isCat = false;
 
-  let username = searchParams.get("username")!;
-  let subject = searchParams.get("subject")!;
-  let start_page = parseInt(searchParams.get("start_page")!);
-  let end_page = parseInt(searchParams.get("end_page")!);
-  let category = searchParams.get("category")!;
-  let nQuestion = parseInt(searchParams.get("nQuestion")!);
-  let tmpIsCat = searchParams.get("isCat")!;
+  const location = useLocation();
+  const ppp = location.state as {
+    username: string,
+    subject: string,
+    start_page: number,
+    end_page: number,
+    category: string,
+    isCat: boolean,
+    nQuestion: number
+  }
+
+  console.log(ppp.username);
+
 
   const zeropad = (rec_str: Number) => {
     var tmp_str = rec_str.toString().padStart(2, "0")
@@ -36,24 +42,24 @@ export const QuizSelection = () => {
   var hours = today.getHours();
   var mins = today.getMinutes();
   // おそらく分のオーダーまで見ていたらクイズマッチは個別のものになるだろう
-  let quizMatchID = `${username}_${subject}_${year}${zeropad(month)}${zeropad(day)}${zeropad(hours)}${zeropad(mins)}`
+  let quizMatchID = `${ppp.username}_${ppp.category}_${year}${zeropad(month)}${zeropad(day)}${zeropad(hours)}${zeropad(mins)}`
   console.log("Quiz match ID=" + quizMatchID);
 
-  if (tmpIsCat.includes("true")) {
+  if (ppp.isCat) {
     isCat = true;
   }
 
-  console.log(subject, start_page, end_page, isCat, nQuestion);
+  console.log(ppp.subject, ppp.start_page, ppp.end_page, ppp.isCat, ppp.nQuestion);
 
   return (
     <>
       <QuizLayout
-        subject={subject}
-        category={category}
-        start_page={start_page}
-        end_page={end_page}
+        subject={ppp.subject}
+        category={ppp.category}
+        start_page={ppp.start_page}
+        end_page={ppp.end_page}
         isCat={isCat}
-        nQuestion={nQuestion}
+        nQuestion={ppp.nQuestion}
         quizMatchID={quizMatchID}
       />
     </>

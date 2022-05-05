@@ -98,9 +98,19 @@ export const SelectQuizPages: VFC<Props> = (props) => {
     console.log("Generate button was pushed.");
     // ここで今回やるクイズのリストを作る。
     // すでに/quiz に対してRouteは設定してあるのでクエリパラメタでクイズ選定に必要なパラメータを渡している
-    navigate(
-      `/quiz?username=${username}&subject=${subject}&start_page=${startPage}&end_page=${endPage}&category=${category}&isCat=${isCat}&nQuestion=${nQuestion}`
-    );
+    navigate("/quiz", {
+      state: {
+        username: username,
+        subject: subject,
+        start_page: startPage,
+        end_page: endPage,
+        category: category,
+        isCat: isCat,
+        nQuestion: nQuestion
+      }
+    });
+    // `/quiz?username=${username}&subject=${subject}&start_page=${startPage}&end_page=${endPage}&category=${category}&isCat=${isCat}&nQuestion=${nQuestion}`
+    // );
   };
 
   return (
@@ -136,7 +146,7 @@ export const SelectQuizPages: VFC<Props> = (props) => {
             )}
           </Select>
           <Box color={"green"}>
-            <Flex>
+            <Grid templateColumns='repeat(4, 1fr)' gap={1}>
               <Text m={3}>ページを選択</Text>
               <NumberInput m={3}
                 width={"150px"}
@@ -150,8 +160,8 @@ export const SelectQuizPages: VFC<Props> = (props) => {
               >
                 <NumberInputField />
               </NumberInput>
-              <Text>To</Text>
-              <NumberInput
+              <Text m={3}>To</Text>
+              <NumberInput m={3}
                 width={"150px"}
                 value={endPage}
                 onChange={(valueString) => setEndPage(parseInt(valueString))}
@@ -161,7 +171,7 @@ export const SelectQuizPages: VFC<Props> = (props) => {
               >
                 <NumberInputField />
               </NumberInput>
-            </Flex>
+            </Grid>
           </Box>
           <Flex>
             <Text color="blue">問題数を限定する</Text>
@@ -177,7 +187,7 @@ export const SelectQuizPages: VFC<Props> = (props) => {
           </Flex>
           <FormControl display="flex" alignItems="center">
             <FormLabel color="black" htmlFor="email-alerts" mb="0">
-              本気モード？
+              本気モード
             </FormLabel>
             <Switch id="email-alerts" />
           </FormControl>

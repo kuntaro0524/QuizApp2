@@ -8,4 +8,5 @@ export type QuizInfo = {
   ntrial: number;
   ncorr: number;
   corr_ratio: number;
+  grade: number
 };

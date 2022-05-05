@@ -109,6 +109,9 @@ export const useQuiz = () => {
     let qlength = qArray.length;
     console.log("This is selectRandomQuizes: all quizes=" + qlength);
 
+    console.log(qArray);
+
+
     let nprep = 0;
     if (nQuizes > qlength) {
       nprep = qlength;

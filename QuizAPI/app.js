@@ -18,7 +18,7 @@ app.use(
 app.use(bodyParser.json());
 
 /* Mongoose DB を読み込む */
-mongoose.connect("mongodb://localhost:27017/ibukiquiz", {
+mongoose.connect("mongodb://localhost:27017/exam_quiz", {
   useNewUrlParser: true,
 });
 
@@ -41,6 +41,8 @@ const quiz_schema = {
   ntrial: Number,
   ncorr: Number,
   corr_ratio: Number,
+  grade: Number,
+  exam: String
 };
 
 // ログイン用の情報を別のcollectionで保持する

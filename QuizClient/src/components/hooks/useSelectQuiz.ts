@@ -22,6 +22,7 @@ export const useSelectQuiz = () => {
     ntrial: 3,
     corr_ratio: 33.3,
     category: "test",
+    grade: 1
   });
   // 選択されたクイズの情報を取得する関数
   // 引数→ユーザのID番号、ユーザの一覧

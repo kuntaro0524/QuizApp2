@@ -52,7 +52,7 @@ export const SelectQuizPages: VFC<Props> = (props) => {
   const { selectRandomQuizes } = useQuiz();
 
   const howto_select = [
-    { subject: "english", categories: ["papa", "textbook"] },
+    { subject: "english", categories: ["papa", "textbook", "exam"] },
     { subject: "shakai", categories: ["jiyujizai", "correction"] },
     { subject: "science", categories: ["jiyujizai", "correction"] },
   ];

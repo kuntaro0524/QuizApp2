@@ -42,7 +42,7 @@ pure_df=selected_df.fillna("P999")
 json_strings = df.to_json(orient='records')
 parsed = json.loads(json_strings)
 
-db = client.ibukiquiz
+db = client.exam_quiz
 col = db[collection_name]
 
 # 指定した collection_name　でクイズを登録

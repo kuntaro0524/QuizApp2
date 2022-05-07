@@ -51,7 +51,7 @@ export const QuestionBox = (props: Props) => {
   const { selectedUser } = useUser();
   const { showMessage } = useMessage();
 
-  // console.log("Top of QuestionBox: SUBJECT=" + subject);
+  // console.log("Tsocial of QuestionBox: SUBJECT=" + subject);
   const navigate = useNavigate();
 
   const {
@@ -199,7 +199,7 @@ export const QuestionBox = (props: Props) => {
 
     copy_quizes.splice(qindex, 1, copy_to_change);
     console.log("新しい配列としてセットします。");
-    // console.log(copy_quizes);
+    console.log(copy_quizes);
     setQuizArray(copy_quizes);
     console.log("新しい配列としてセットします");
 

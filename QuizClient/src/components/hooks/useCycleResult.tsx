@@ -29,6 +29,8 @@ export const useCycleResult = () => {
   const getFlatResult = (props: Props3) => {
     // 調査したことがあるかどうかのフラグ的な配列
     let checked_list: string[] = [];
+    console.log("<getFlatResult>");
+
     console.log("Current length of results=" + resultArray);
 
     const { filterRatio, currResultArray } = props;
@@ -63,6 +65,7 @@ export const useCycleResult = () => {
         );
       }
     })
+    console.log("</getFlatResult>");
     return checked_list
   };
 
@@ -77,8 +80,10 @@ export const useCycleResult = () => {
 
     checked_list = getFlatResult({ filterRatio, currResultArray });
 
-    console.log(">>> checked_list <<<<");
+    console.log(">>> checkCurrentResult: checked_list <<<<");
     console.log(checked_list);
+
+    console.log("重複しているものをなくしてクイズIDごとのチェックをする");
 
     checked_list.forEach((elem) => {
       const target_qid = elem;
@@ -89,7 +94,10 @@ export const useCycleResult = () => {
 
       if (target_result != null) {
         if (target_result.corr_ratio >= filterRatio) {
+          console.log("合格したよ！" + target_result.corr_ratio);
           passed_results_local.push(target_result.q_id);
+        } else {
+          console.log("まだ合格していないよ" + target_result.corr_ratio);
         }
       }
     });

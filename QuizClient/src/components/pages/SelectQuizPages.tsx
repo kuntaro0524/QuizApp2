@@ -51,9 +51,10 @@ export const SelectQuizPages: VFC<Props> = (props) => {
 
   const { selectRandomQuizes } = useQuiz();
 
+  // ここの名称をMongoDBに登録した collections の名称にしておけば良い
   const howto_select = [
     { subject: "english", categories: ["papa", "textbook", "exam"] },
-    { subject: "shakai", categories: ["jiyujizai", "correction"] },
+    { subject: "social", categories: ["jiyujizai", "correction"] },
     { subject: "science", categories: ["jiyujizai", "correction"] },
   ];
 
@@ -127,7 +128,7 @@ export const SelectQuizPages: VFC<Props> = (props) => {
             bg={"teal.200"}
             onChange={onChangeSelect}
           >
-            <option value="shakai">社会</option>
+            <option value="social">社会</option>
             <option value="english">英語</option>
             <option value="science">理科</option>
           </Select>
